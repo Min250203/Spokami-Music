@@ -485,6 +485,11 @@ html {
     margin-bottom: 30px;
 }
 
+.option_music{
+    display: flex;
+    gap: 10px;
+}
+
 .btn_search {
     padding: 15px;
     outline: none;
@@ -499,8 +504,22 @@ html {
     display: flex;
 }
 
+.btn_music-new{
+    padding: 12px;
+    outline: none;
+    cursor: pointer;
+    height: 33px;
+    align-items: center;
+    border: none;
+    color: #fff;
+    background-color: #211c1c;
+    font-weight: 600;
+    border-radius: 15px;
+    display: flex;
+}
+
 .playlist__render {
-    height: 245 px;
+    height: 245px;
 }
 
 .playlist__search {
@@ -529,16 +548,33 @@ html {
 
 .content__infor-albums,
 .list_albums-relate,
-.list__musicForU,
+
 .list__musicMood,
-.list__musicHealth,
-.list__musicAcoustic {
+.list__musicChill,
+.list__musicSpring,
+.list__musicHot,
+.list__musicTop
+{
     display: grid;
-    grid-template-columns: repeat(10, 196px);
+    grid-template-columns: repeat(7, 196px);
     gap: 15px;
     overflow-x: scroll;
+}
 
-    /* border-radius: 15px; */
+.list__musicForU{
+    display: grid;
+    grid-template-columns: repeat(3, 32%);
+    gap: 18px;
+    overflow-x: scroll;
+    justify-content: space-between;
+}
+
+.img_slide-banner{
+    height: 100% !important;
+}
+
+.slide_banner{
+    padding: 0 !important;
 }
 
 .all-wrap-search {
@@ -701,6 +737,13 @@ html {
     padding-top: 20px;
     align-items: center;
 }
+.content_music-new{
+    display: grid;
+    grid-template-columns: 70% 30%;
+    padding-top: 20px;
+    align-items: center;
+}
+
 
 .content__sing-wrap-search {
     padding-bottom: 15px;
@@ -748,6 +791,10 @@ html {
 .name_sing {
     font-size: 17px;
     font-weight: 600;
+}
+
+.name_single, .name_sing{
+    text-overflow: ellipsis;
 }
 
 .name_single,
@@ -837,6 +884,11 @@ html {
     gap: 10px;
 }
 
+.lock_musicNew{
+    margin: 0 auto;
+}
+
+
 .img_single-search {
     width: 90px;
 }
@@ -904,6 +956,28 @@ html {
     display: none;
 }
 
+::-webkit-scrollbar {
+    overflow: visible;
+    /* color: #efefef; */
+    background-color: #efefef;
+    /* background-color: red; */
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    /* color: #efefef; */
+    background-color: #efefef;
+    /* background-color: red; */
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    /* color: #efefef; */
+    /* background-color: #efefef; */
+    /* background-color: #efefef; */
+}
+.head_title-musicNewlyLunched {
+    height: 450px;
+}
+
 /* mobile */
 @media only screen and (max-width: 46.1875em) {
 
@@ -912,7 +986,6 @@ html {
     }
 
     .children__content-playlist {
-        /* display: none; */
         height: 95%;
     }
 
@@ -927,12 +1000,18 @@ html {
 
     .content__infor-albums,
     .list_albums-relate,
-    .list__musicForU,
     .list__musicMood,
-    .list__musicHealth,
-    .list__musicAcoustic {
+    .list__musicChill,
+    .list__musicSpring {
         display: grid;
         grid-template-columns: repeat(10, 153px);
+        gap: 0px;
+        overflow-x: scroll;
+    }
+
+    .list__musicForU{
+        display: grid;
+        grid-template-columns: repeat(3, 200px);
         gap: 0px;
         overflow-x: scroll;
     }
@@ -942,14 +1021,6 @@ html {
         padding: 0px 15px 5px 15px;
     }
 
-    /* .content__infor-albums,
-    .list_albums-relate,
-    .list__musicForU,
-    .list__musicMood,
-    .list__musicHealth,
-    .list__musicAcoustic {
-        overflow-x: scroll;
-    } */
 
     .container__maincontent {
         padding-top: 0;
@@ -970,6 +1041,11 @@ html {
 
     .head__content-title {
         gap: 7px;
+    }
+
+    
+    .head_title-musicNewlyLunched {
+        height: 500px;
     }
 
     .container__audio {
@@ -1039,24 +1115,7 @@ html {
 
     /* scroll */
 
-    ::-webkit-scrollbar {
-        overflow: visible;
-        /* color: #efefef; */
-        background-color: #efefef;
-        /* background-color: red; */
-    }
-
-    ::-webkit-scrollbar-thumb:horizontal {
-        /* color: #efefef; */
-        background-color: #efefef;
-        /* background-color: red; */
-    }
-
-    ::-webkit-scrollbar-thumb:vertical {
-        /* color: #efefef; */
-        /* background-color: #efefef; */
-        background-color: red;
-    }
+    
 
     /* end */
 
@@ -1209,14 +1268,16 @@ html {
 
     .content__infor-albums,
     .list_albums-relate,
-    .list__musicForU,
     .list__musicMood,
-    .list__musicHealth,
-    .list__musicAcoustic {
+    .list__musicChill,
+    .list__musicSpring {
         grid-template-columns: repeat(10, 176px);
         overflow-x: scroll;
+    }
 
-
+    .list__musicForU{
+        grid-template-columns: repeat(3, 176px);
+        overflow-x: scroll;
     }
 
     .box_relate-wrap,
@@ -1344,4 +1405,12 @@ html {
 
 .categories{
     font-weight: 600;
+}
+
+.list_musicNewly{
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    justify-content: space-between;
+    height: 100%;
+    overflow: hidden;
 }

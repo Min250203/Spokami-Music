@@ -7,24 +7,22 @@ const TrackPlaylist = {
     allTracksPlaylist: [],
     allTracks: [],
     handleRenderTracksForU: async function (prop) {
+        console.log("đây là lần thứ 2")
         let _this = this;
-        let playlistID = prop.categoriesIDMusicForU;
-        let playlisMusicForU = prop.playlisMusicForU;
-        let categoriesParameters = prop.categoriesParameters;
-        let titlePlaylist = prop.titlePlaylist;
+        console.log(prop)
         // get alltracksplaylist
-        await fetch(END_POINT + '/top100', categoriesParameters)
+        await fetch(END_POINT +`detailplaylist?id=${prop.idPlaylistForU}`)
             .then(response => response.json())
             .then(data => {
-                _this.allTracksPlaylist = data.playlists.items;
+                console.log(data)
+                _this.allTracksPlaylist =data.data.song.item.slice(0,99);
             })
             .catch(error => console.error(error))
-        const tracksPlaylist = _this.allTracksPlaylist.filter(item => item.name === titlePlaylist)
         //   inforHeader playlist
         const htmlsInforPlaylistHeader = `
             <div class="playlist__header">
                 <div class="playlist_img">
-                    <img src="${tracksPlaylist[0].images[0].url}"
+                    <img src="${prop.bannerForU}"
                         alt="">
                 </div>
                 <div class="categories_descr">
@@ -36,47 +34,47 @@ const TrackPlaylist = {
             `
         headerInfor.innerHTML = htmlsInforPlaylistHeader;
 
-        await fetch('https://api.spotify.com/v1/playlists/' + tracksPlaylist[0].id + '/tracks', categoriesParameters)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                return _this.allTracks = data.items
-            })
-            .catch(error => console.error(error))
+        // await fetch('https://api.spotify.com/v1/playlists/' + tracksPlaylist[0].id + '/tracks', categoriesParameters)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log(data)
+        //         return _this.allTracks = data.items
+        //     })
+        //     .catch(error => console.error(error))
 
-        const htmlsAllTracks = _this.allTracks.map((item, index) => {
-            return `
-            <div class="content__sing-wrap content-wrap">
-                <div class="descr_sing-single">
-                    <div class="list__title_sing">
-                        <div class="order_number">${index + 1}</div>
-                        <div class="img_title_sing">
-                            <img src="${item.track.album.images[0].url}"
-                                alt="">
-                        </div>
-                        <div class="list__sing-singgle">
-                            <p class="name_sing">${item.track.name}</p>
-                            <p class="name_single">${item.track.artists[0].name}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="list_album">
-                    <div class="name_album">${item.track.album.name}</div>
-                </div>
-                <div class="list_add-time">
-                    <div class="time-added">1 tuần trước</div>
-                </div>
-                <div class="list_clock">
-                    <div class="icon_like-mobile">
-                        <i class="fa-regular fa-heart icon_like-mobile"></i>
-                    </div>
-                    <div class="time-clock">2 phút</div>
-                    <i class="fa-solid fa-ellipsis"></i>
-                </div>
-            </div>
-            `
-        })
-        allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
+        // const htmlsAllTracks = _this.allTracks.map((item, index) => {
+        //     return `
+        //     <div class="content__sing-wrap content-wrap">
+        //         <div class="descr_sing-single">
+        //             <div class="list__title_sing">
+        //                 <div class="order_number">${index + 1}</div>
+        //                 <div class="img_title_sing">
+        //                     <img src="${item.track.album.images[0].url}"
+        //                         alt="">
+        //                 </div>
+        //                 <div class="list__sing-singgle">
+        //                     <p class="name_sing">${item.track.name}</p>
+        //                     <p class="name_single">${item.track.artists[0].name}</p>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //         <div class="list_album">
+        //             <div class="name_album">${item.track.album.name}</div>
+        //         </div>
+        //         <div class="list_add-time">
+        //             <div class="time-added">1 tuần trước</div>
+        //         </div>
+        //         <div class="list_clock">
+        //             <div class="icon_like-mobile">
+        //                 <i class="fa-regular fa-heart icon_like-mobile"></i>
+        //             </div>
+        //             <div class="time-clock">2 phút</div>
+        //             <i class="fa-solid fa-ellipsis"></i>
+        //         </div>
+        //     </div>
+        //     `
+        // })
+        // allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
     },
     handleRenderTracksMood: async function (prop) {
         let _this = this;
