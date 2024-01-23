@@ -8,6 +8,8 @@ const allInforSearch = $('.content__infor-all');
 const singleWrapSearch = $('.single_wrap-search');
 const singWrapSearch = $('.sing_wrap-search');
 const artistRelateWrap = $('.artist_box-wrap');
+const playlistWrapSearch = $('.playlist_box-wrap');
+const appearSingleWrapSearch = $('.appear_single-wrap');
 const albumsWrap = $('.album_box-wrap');
 const mainInforTracks = $('.children__content-playlist');
 const mainContent = $('.desc__contentmain');
@@ -16,7 +18,8 @@ const contentSearch = $('.content_search');
 const albumRelateSearch = $('.relate_albums-search');
 const iconHeadLeft = $('.left');
 
-// const albumRealate = $('.list_albums-relate');
+const END_POINT = "http://localhost:3000/api/";
+
 
 const SearchMusic = {
     tracksInfor: [],
@@ -30,38 +33,22 @@ const SearchMusic = {
     relateAlbum: false,
     type: '',
     itemSingle: {},
+    dataValueSearch: {},
+    artistSearch: [],
+    appearSingle: [],
     handleSearch: async function (props) {
         let _this = this;
         if (props) {
-            let valueInput = props.valueInput
-            let accessToken = props.accessToken
-            this.type = props.type
-            //    get Artist ID
-            _this.artistParameters = {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken
-                }
-            };
-
-            await fetch('https://api.spotify.com/v1/search?q=' + valueInput + '&type=artist', _this.artistParameters)
+            await fetch(END_POINT + `search?keyword=${props.valueInput}`)
                 .then(response => response.json())
                 .then(data => {
-                    _this.artistID = data.artists.items[0].id;
-                    return _this.artistID;
+                    _this.dataValueSearch = data.data;
                 })
                 .catch(error => console.error('Error:', error));
 
             // get with Artist IA all albums from that artist
             if (_this.type === "album") {
-                await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/albums' + '?market=VN&limit=50', _this.artistParameters)
-                    .then(response => response.json())
-                    .then(data => {
-                        _this.albums = data.items;
-                    })
-                    .catch(error => console.error('Error:', error))
-                const htmlsAlbumSearch = _this.albums.map((album, index) => {
+                const htmlsAlbumSearch = _this.dataValueSearch.artists[0].map((album, index) => {
                     let yearAlbum = album.release_date.split("-", 1);
                     return `
                 <div class="card_box-sing playlist__search" data-Index=${index}>
@@ -82,7 +69,6 @@ const SearchMusic = {
                 await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/top-tracks' + '?market=VN&limit=50', _this.artistParameters)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
                         return _this.tracksInfor = data.tracks;
 
                     })
@@ -115,103 +101,123 @@ const SearchMusic = {
                 })
                 tracksInforSearch.innerHTML = htmlsTracks.join("");
             } else {
-                // infor of sing and single
-                await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/top-tracks' + '?market=VN&limit=1', _this.artistParameters)
+                // data Single for album and artist when search
+                await fetch(END_POINT + `/artist?name=${_this.dataValueSearch.artists[0].name}`)
                     .then(response => response.json())
                     .then(data => {
-                        return _this.tracksInforAllSearch = data.tracks;
+                        _this.albums = data.data.sections;
+
                     })
-                    .catch(error => console.error(error))
+                    .catch(error => console.error('Error:', error))
+
+                    // data Single for appear single when search
+                    await fetch(END_POINT+`/artistsong?id=${_this.dataValueSearch.artists[0].id}&page=1&count=10`)
+                    .then(response => response.json())
+                    .then(data => {
+                        _this.appearSingle = data.data.items;
+                    })
 
                 // inforSingle when search
-                _this.itemSingle = _this.tracksInforAllSearch[0];
                 const htmlsInforSinglelSearch =
                     `
-                <div class="single-wrap">
-                    <div class="img_single-search">
-                        <img src="${_this.itemSingle.album.images[0].url}"
-                        alt="">
+                    <div div div div div class="single-wrap">
+                        <div class="img_single-search">
+                            <img src="${_this.dataValueSearch.artists[0].thumbnailM}" alt="">
+                        </div>
+                        <p class="single-search">${_this.dataValueSearch.artists[0].name}</p>
+                        <p class="artist-search">Nghệ sĩ</p>
                     </div>
-                    <p class="single-search">${_this.itemSingle.artists[0].name}</p>
-                    <p class="artist-search">Nghệ sĩ</p>
-                 </div>
                 `
                 singleWrapSearch.innerHTML = htmlsInforSinglelSearch;
+
                 // when click infor single
                 _this.handleEventTopTracks();
 
                 // top tracks when search single
-                const htmlsTracksInforAllSearch = _this.tracksInforAllSearch.slice(5, 9).map((item) => {
+                const htmlsTracksInforAllSearch = _this.dataValueSearch.songs.slice(4, 8).map((item) => {
                     return `
-                <div class="sing_wrap">
-                    <div class="list__title_sing">
-                        <div class="img_title_sing">
-                            <img src="${item.album.images[0].url}" alt="">
+                        <div class="sing_wrap">
+                            <div class="list__title_sing">
+                                <div class="img_title_sing">
+                                    <img src="${item.thumbnailM}" alt="">
+                                </div>
+                                <div class="list__sing-search">
+                                    <p class="name_sing">${item.title}</p>
+                                    <p class="name_single">${item.artistsNames}</p>
+                                </div>
+                            </div>
+                            <div class="list_clock">
+                                <i class="fa-regular fa-heart"></i>
+                                <div class="time-clock">2 phút</div>
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </div>
                         </div>
-                        <div class="list__sing-search">
-                            <p class="name_sing">${item.name}</p>
-                            <p class="name_single">${item.artists[0].name}</p>
-                        </div>
-                    </div>
-                    <div class="list_clock">
-                        <i class="fa-regular fa-heart"></i>
-                        <div class="time-clock">2 phút</div>
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </div>
-                </div>
                 `
                 })
                 singWrapSearch.innerHTML = htmlsTracksInforAllSearch.join('');
 
-                // infor artist relate
-                await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/related-artists' + '?market=VN', _this.artistParameters)
-                    .then(response => response.json())
-                    .then(data => {
-                        return _this.artistRelate = data.artists
-                    })
-                    .catch(error => console.error("error", error))
-
-                const htmlArtistRelate = _this.artistRelate.slice(10, 14).map((item, index) => {
+                // appear artist
+                const htmlsAppearSingleSearch = _this.appearSingle.slice(0, 6).map((item, index) => {
                     return `
+                        <div class="card_box-sing playlist__search" data-Index=${index}>
+                            <img class="img_singgle" src="${item.thumbnailM}"alt="">
+                            <div class="descr">
+                                <p class="title_singgle">${item.title}</p>
+                                <p class="desc_Singgle">${item.artistsNames}</p>
+                            </div>
+                        </div>
+                    `
+                })
+                appearSingleWrapSearch.innerHTML = htmlsAppearSingleSearch.join("");
+
+                // infor artist 
+                const artistSearch = this.albums.filter((item) => item.sectionId === "aReArtist");
+                const htmlArtistRelate = artistSearch[0].items.map((item, index) => {
+                    return `
+                        <div class="card_box-sing playlist__search">
+                            <img class="img_singgle" src="${item.thumbnailM}" alt="">
+                            <p class="title_singgle">${item.name}</p>
+                        </div>
+                     `
+                })
+                const htmlArtistSearch = 
+                `
                 <div class="card_box-sing playlist__search">
-                    <img class="img_singgle" src="${item.images[0].url}" alt="">
-                     <p class="title_singgle">${item.name}</p>
+                    <img class="img_singgle" src="${_this.dataValueSearch.artists[0].thumbnailM}" alt="">
+                    <p class="title_singgle">${_this.dataValueSearch.artists[0].name}</p>
                 </div>
                 `
-                })
-
-                const htmlArtistSearch = `
-            <div class="card_box-sing playlist__search">
-            <img class="img_singgle" src="${_this.itemSingle.album.images[0].url}" alt="">
-                <p class="title_singgle">${_this.itemSingle.artists[0].name}</p>
-              </div>
-            `
                 artistRelateWrap.innerHTML = htmlArtistSearch + htmlArtistRelate.join("");
 
                 // infor album when search all
-                await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/albums' + '?market=VN&limit=5', _this.artistParameters)
-                    .then(response => response.json())
-                    .then(data => {
-                        return _this.albums = data.items;
-                    })
-                    .catch(error => console.error('Error:', error))
-                console.log(_this.albums)
-                const htmlsAlbumSearch = _this.albums.map((album, index) => {
-                    let yearAlbum = album.release_date.split("-", 1);
+                const htmlsAlbumSearch = _this.albums[1].items.slice(0, 6).map((item, index) => {
+                    let yearAlbum = item.releaseDate.split("/");
                     return `
-                <div class="card_box-sing playlist__search" data-Index=${index}>
-                    <img class="img_singgle"
-                        src="${album.images[0].url}"
-                        alt="">
-                        <div class="descr">
-                        <p class="title_singgle">${album.name}</p>
-                        <p class="desc_Singgle">${yearAlbum + " • " + album.artists[0].name}</p>
+                        <div class="card_box-sing playlist__search" data-Index=${index}>
+                            <img class="img_singgle" src="${item.thumbnailM}"alt="">
+                            <div class="descr">
+                                <p class="title_singgle">${item.title}</p>
+                                <p class="desc_Singgle">${yearAlbum[2] + " • " + _this.dataValueSearch.artists[0].name}</p>
+                            </div>
                         </div>
-                </div>
-                `
+                    `
                 })
-                albumsInforSearch.forEach(element => { element.innerHTML = htmlsAlbumSearch.join("") })
+                albumsInforSearch.forEach(element => { element.innerHTML = htmlsAlbumSearch.join("") });
 
+                // infor playlist
+                const htmlsArtistSearch = _this.dataValueSearch.playlists.slice(0, 6).map((item, index) => {
+                    let yearAlbum = item.releaseDate.split("/");
+                    return `
+                        <div class="card_box-sing playlist__search" data-Index=${index}>
+                            <img class="img_singgle" src="${item.thumbnailM}"alt="">
+                            <div class="descr">
+                                <p class="title_singgle">${item.title}</p>
+                                <p class="desc_Singgle">${item.artistsNames}</p>
+                            </div>
+                        </div>
+                    `
+                })
+                playlistWrapSearch.innerHTML = htmlsArtistSearch.join("");
             }
         }
         else {
@@ -301,7 +307,6 @@ const SearchMusic = {
 
         // infor artist track
         artistRelateWrap.onclick = function (e) {
-            console.log("đây là lần tết")
             const tracksSingle = e.target.closest('.card_box-sing');
             if (tracksSingle) {
                 $('.search').style.color = "#fff";
@@ -325,12 +330,9 @@ const SearchMusic = {
                 let artistRelate = _this.artistRelate;
                 // let itemSingle = _this.itemSingle;
                 let tilteArtistRelate = tracksSingle.querySelector('.title_singgle').innerText;
-                console.log(_this.itemSingle.artists[0].name === tilteArtistRelate)
                 if (_this.itemSingle.artists[0].name === tilteArtistRelate) {
-                    console.log(124)
                     TopTracksSingle.handleTracks({ artistID, artistParameters, type: "infor-Single" })
                 } else {
-                    console.log(235)
                     TopTracksSingle.handleTracks({ tilteArtistRelate, artistParameters, type, artistRelate });
                 }
 
