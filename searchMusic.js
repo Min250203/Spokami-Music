@@ -36,6 +36,7 @@ const SearchMusic = {
     dataValueSearch: {},
     artistSearch: [],
     appearSingle: [],
+    indexTracksPlaylist: 0,
     handleSearch: async function (props) {
         let _this = this;
         if (props) {
@@ -134,13 +135,14 @@ const SearchMusic = {
                 _this.handleEventTopTracks();
 
                 // top tracks when search single
-                const htmlsTracksInforAllSearch = _this.dataValueSearch.songs.slice(4, 8).map((item) => {
+                const htmlsTracksInforAllSearch = _this.dataValueSearch.songs.slice(4, 8).map((item, index) => {
                     return `
-                        <div class="sing_wrap">
+                        <div class="sing_wrap" data-Index=${index}>
                             <div class="list__title_sing">
                                 <div class="img_title_sing">
                                     <img src="${item.thumbnailM}" alt="">
                                 </div>
+                                 <div class="play_track-play"><i class="fa-solid fa-play icon_play-tracks"></i></div>
                                 <div class="list__sing-search">
                                     <p class="name_sing">${item.title}</p>
                                     <p class="name_single">${item.artistsNames}</p>
@@ -155,6 +157,24 @@ const SearchMusic = {
                 `
                 })
                 singWrapSearch.innerHTML = htmlsTracksInforAllSearch.join('');
+
+                // hover tracks to prepair play
+                $$('.sing_wrap').forEach((element, index) => {
+                    // let orderNumber = element.querySelector('.order_number');
+                    let iconPlay = element.querySelector('.play_track-play');
+                    let iconPlay_ = element.querySelector('.icon_play-tracks');
+                    element.onmouseover = function (e) {
+                        console.log(1)
+                        _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
+                            // orderNumber.style.display = "none";
+                            iconPlay.style.display = "block";
+                            iconPlay_.style.fontSize = "17px";
+                    }
+                    element.onmouseout = function (e) {
+                        // orderNumber.style.display = "block";
+                        iconPlay.style.display = "none";
+                    }
+                })
 
                 // appear artist
                 const htmlsAppearSingleSearch = _this.appearSingle.slice(0, 6).map((item, index) => {

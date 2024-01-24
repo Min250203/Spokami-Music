@@ -102,7 +102,7 @@ const HomePageMusic = {
                 <div class="descr_sing-single-search">
                     <div class="list__title_sing">
                         <div class="order_number">${index + 1}</div>
-                        <div class="play_track-play"><i class="fa-solid fa-play icon_play-tracks"></i></div>
+                        <div class="play_track-play-main"><i class="fa-solid fa-play icon_play-tracks"></i></div>
                         <div class="img_title_sing">
                             <img src="${item.thumbnailM}" alt="">
                         </div>
@@ -123,7 +123,7 @@ const HomePageMusic = {
          // hover tracks when play
          $$('.content_music-new').forEach((element, index) => {
             let orderNumber = element.querySelector('.order_number');
-            let iconPlay = element.querySelector('.play_track-play');
+            let iconPlay = element.querySelector('.play_track-play-main');
             element.onmouseover = function (e) {
                 _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
                 if (orderNumber && index === _this.indexTracksPlaylist) {

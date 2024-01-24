@@ -325,8 +325,8 @@
 
     <div class="container__audio">
         <div class="infor__music">
-            <div class="img__played">hình ảnh</div>
-            <div class="name__music">Góc chữa lành</div>
+            <div class="img__played"></div>
+            <div class="name__music"></div>
         </div>
 
         <div class="control">
@@ -349,7 +349,9 @@
                 </div>
             </div>
             <input type="range" id="progress" class="progress" value="0" step="1" min="0" max="100">
-            <audio src=""></audio>
+            <audio id="audio" >
+                <source class="src-audio" src="" type="audio/mpeg">
+            </audio>
         </div>
     </div>
 

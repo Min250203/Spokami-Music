@@ -150,9 +150,35 @@ html {
 }
 
 .img__played {
-    width: 55px;
-    height: 55px;
+    display: none;
+    width: 60px;
+    height: 57px;
     background-color: #545454;
+}
+
+.img_song-play{
+    width: 100%;
+    object-fit: cover;
+}
+
+.desc_song-play{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.name__music{
+    display: none;
+}
+
+.title_song-play{
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.title_single-play{
+    font-size: 13px;
+    color: #ccc;
 }
 
 .icon__slidenav {
@@ -264,7 +290,8 @@ html {
 }
 
 .container__audio {
-    display: none;
+    display: flex;
+    background-color: #000;
     /* display: flex; */
     position: fixed;
     height: 80px;
@@ -303,6 +330,7 @@ html {
 
 .audio__icon {
     display: flex;
+    align-items: center;
 }
 
 .btn {
@@ -334,6 +362,32 @@ html {
 
 .control .icon-pause {
     display: none;
+}
+
+.control .icon-play {
+    width: 13px;
+}
+
+.control .playing .icon-pause{
+    display: inline-block;
+   
+}
+
+.control .playing .icon-play{
+    display: none;
+}
+
+.btn-toggle-play{
+    font-size: 20px;
+    padding: 7px 12px;
+    background-color: #fff;
+    border-radius: 30px;
+    color: #000;
+    width: 20%;
+}
+
+.activeTrack{
+    background-color: red;
 }
 
 .infor__music {
@@ -745,6 +799,7 @@ html {
     display: flex;
     align-items: center;
     gap: 10px;
+    position: relative;
 }
 
 .title_sing-wrap,
@@ -872,6 +927,11 @@ html {
 }
 
 .play_track-play {
+    display: none;
+    position: absolute;
+    left: 17px;
+}
+.play_track-play-main {
     display: none;
 }
 
