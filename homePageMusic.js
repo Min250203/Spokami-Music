@@ -64,7 +64,10 @@ const HomePageMusic = {
     bannerSpring: '',
     bannerTop: '',
     bannerHot: '',
-
+    isPlaying: false,
+    dataTrackPlaying: {},
+    oldIndex: 0,
+    clickSong: 0,
     handleRenderMusic: async function () {
         let _this = this;
         // data categories
@@ -102,7 +105,10 @@ const HomePageMusic = {
                 <div class="descr_sing-single-search">
                     <div class="list__title_sing">
                         <div class="order_number">${index + 1}</div>
-                        <div class="play_track-play-main"><i class="fa-solid fa-play icon_play-tracks"></i></div>
+                        <div class="play_track-play-main">
+                        <i class="fa-solid fa-play icon_play-tracks"></i>
+                        <i class="fas fa-pause icon_pause-tracks"></i>
+                        </div>
                         <div class="img_title_sing">
                             <img src="${item.thumbnailM}" alt="">
                         </div>
@@ -120,25 +126,122 @@ const HomePageMusic = {
         })
         musicMewlyLunched.innerHTML = list__musicNewlyLunched.join("");
 
-         // hover tracks when play
-         $$('.content_music-new').forEach((element, index) => {
+        // play tracks when click
+        $$('.content_music-new').forEach((element, index) => {
             let orderNumber = element.querySelector('.order_number');
-            let iconPlay = element.querySelector('.play_track-play-main');
-            element.onmouseover = function (e) {
-                _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
-                if (orderNumber && index === _this.indexTracksPlaylist) {
+            let iconPlay = element.querySelector('.icon_play-tracks');
+            let iconPause = element.querySelector('.icon_pause-tracks');
+            let toolplay = element.querySelector('.play_track-play-main');
+            element.onclick = function (e) {
+                // click different song
+                const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
+                console.log(songIndex)
+                _this.clickSong++;
+                console.log(_this.clickSong)
+                if (songIndex) {
+                    console.log(111)
+                    let orderNumber = element.querySelector('.order_number');
+                    _this.currentIndex = Number(element.getAttribute('data-Index'));
+                    _this.isPlaying = true;
+                    element.classList.add('active_playing-track');
+                    if (_this.currentIndex !== _this.oldIndex) {
+                        console.log("co do day c")
+                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                        _this.oldIndex = Number(element.getAttribute('data-Index'));
+                        // _this.clickSong = 0;
+
+                    }
+                    _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                    let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                    let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
+                    // show descr song
+                    $('.name__music').style.display = "block";
+                    $('.img__played').style.display = "block";
+
+                    // show icon
                     orderNumber.style.display = "none";
-                    iconPlay.style.display = "block"
+                    toolplay.style.display = "block";
+                    iconPlay.style.display = "none";
+                    iconPause.style.display = "block";
+
+                    // change icon play
+                    $('.play_track-play-main').classList.add('playing');
+                    TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, dataAllTrack });
+
+
+
+                } else {
+                    // click to pause
+                    let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                    let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
+                    if (_this.clickSong % 2 === 0) {
+                        orderNumber.style.display = "none";
+                        toolplay.style.display = "block";
+                        iconPlay.style.display = "block";
+                        iconPause.style.display = "none";
+                        element.classList.remove('active_playing-track');
+                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, dataAllTrack, status: "pause" });
+                    }
+                }
+
+            }
+
+        })
+
+        // hover tracks when play
+        $$('.content_music-new').forEach((element, index) => {
+            let orderNumber = element.querySelector('.order_number');
+            let iconPlay = element.querySelector('.icon_play-tracks');
+            let iconPause = element.querySelector('.icon_pause-tracks');
+            let toolplay = element.querySelector('.play_track-play-main');
+            let valueSingPlaying = element.querySelector('.name_sing').textContent;
+
+            element.onmouseover = function (e) {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 !== 0) {
+                    orderNumber.style.display = "none";
+                    toolplay.style.display = "block";
+                    iconPlay.style.display = "none";
+                    iconPause.style.display = "block";
+                } else {
+                    orderNumber.style.display = "none";
+                    toolplay.style.display = "block";
+                    iconPlay.style.display = "block";
+                    iconPause.style.display = "none";
                 }
             }
+
             element.onmouseout = function (e) {
-                orderNumber.style.display = "block";
-                iconPlay.style.display = "none"
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let valueSingPlaying = element.querySelector('.name_sing').textContent;
+                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 !== 0) {
+                    console.log("l1")
+                    orderNumber.style.display = "none";
+                    toolplay.style.display = "block";
+                    iconPlay.style.display = "none";
+                    iconPause.style.display = "block";
+                }
+                // else if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 === 0) {
+                //     orderNumber.style.display = "none";
+                //     toolplay.style.display = "block";
+                //     iconPlay.style.display = "block";
+                //     iconPause.style.display = "none";
+                // }
+                else {
+                    console.log("l2")
+                    orderNumber.style.display = "block";
+                    toolplay.style.display = "none";
+                    iconPlay.style.display = "none";
+                    iconPause.style.display = "none";
+                }
             }
         })
 
         // render banner Music Mood
-        const listMusicMood = _this.playlistMusicMood[0].items.slice(0,6).map((item, index) => {
+        const listMusicMood = _this.playlistMusicMood[0].items.slice(0, 6).map((item, index) => {
             _this.idPlaylistMood = item.encodeId;
             _this.bannerMood = item.thumbnailM;
 
@@ -155,7 +258,7 @@ const HomePageMusic = {
         musicMood.innerHTML = listMusicMood.join("");
 
         // render banner Music Chill
-        const listmusicChill = _this.playlistMusicChill[0].items.slice(0,6).map((item, index) => {
+        const listmusicChill = _this.playlistMusicChill[0].items.slice(0, 6).map((item, index) => {
             _this.idPlaylistChill = item.encodeId;
             _this.bannerChill = item.thumbnailM;
 
@@ -171,7 +274,7 @@ const HomePageMusic = {
         musicChill.innerHTML = listmusicChill.join("");
 
         // render banner Music Spring
-        const list__musicSpring = _this.playlistMusicSpring[0].items.slice(0,6).map((item, index) => {
+        const list__musicSpring = _this.playlistMusicSpring[0].items.slice(0, 6).map((item, index) => {
             _this.idPlaylistSpring = item.encodeId;
             _this.bannerSpring = item.thumbnailM;
 
@@ -187,7 +290,7 @@ const HomePageMusic = {
         musicSping.innerHTML = list__musicSpring.join("");
 
         // render banner Music Top 100
-        const list__musicTop = _this.playlistMusicTop[0].items.slice(0,6).map((item, index) => {
+        const list__musicTop = _this.playlistMusicTop[0].items.slice(0, 6).map((item, index) => {
             _this.idPlaylistTop = item.encodeId;
             _this.bannerTop = item.thumbnailM;
 
@@ -203,7 +306,7 @@ const HomePageMusic = {
         musicTop.innerHTML = list__musicTop.join("");
 
         // render banner Music Hot
-        const list__musicHot = _this.playlistMusicHot[0].items.slice(0,6).map((item, index) => {
+        const list__musicHot = _this.playlistMusicHot[0].items.slice(0, 6).map((item, index) => {
             _this.idPlaylistHot = item.encodeId;
             _this.bannerHot = item.thumbnailM;
 
@@ -554,8 +657,8 @@ const HomePageMusic = {
             }
         };
 
-         // click playlist to return tracks music Top
-         musicTop.onclick = function (e) {
+        // click playlist to return tracks music Top
+        musicTop.onclick = function (e) {
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
@@ -590,8 +693,8 @@ const HomePageMusic = {
             }
         };
 
-           // click playlist to return tracks music Top
-           musicHot.onclick = function (e) {
+        // click playlist to return tracks music Top
+        musicHot.onclick = function (e) {
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
@@ -625,7 +728,7 @@ const HomePageMusic = {
                 }
             }
         };
-        
+
     },
     handleEventPage: function () {
         let _this = this;

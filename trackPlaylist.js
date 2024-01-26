@@ -1,11 +1,9 @@
-
 const headerInfor = $('.playlist_header-infor');
 const allTracksPlaylist = $('.all_tracks');
 const audio = $('#audio');
 const progress = $('#progress');
 const btnNext = $('.btn-next');
 const btnPrev = $('.btn-prev');
-
 const playBtn = $(".btn-toggle-play");
 const srcAudio = $(".src-audio");
 
@@ -49,7 +47,6 @@ const TrackPlaylist = {
 
         // render tracks
         const htmlsAllTracks = _this.allTracksPlaylist.song.items.map((item, index) => {
-
             return `
             <div class="content__sing-wrap content-wrap" data-Index=${index}>
                 <div class="descr_sing-single">
@@ -85,9 +82,10 @@ const TrackPlaylist = {
         $$('.content__sing-wrap').forEach((element, index) => {
             element.onclick = function () {
                 _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
                 $('.name__music').style.display = "block";
                 $('.img__played').style.display = "block";
-                _this.loadCurrentSong();
+                _this.loadCurrentSong(dataTrack);
             }
         })
 
@@ -167,6 +165,17 @@ const TrackPlaylist = {
         })
         allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
 
+        // play tracks when click
+        $$('.content__sing-wrap').forEach((element, index) => {
+            element.onclick = function () {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                $('.name__music').style.display = "block";
+                $('.img__played').style.display = "block";
+                _this.loadCurrentSong(dataTrack);
+            }
+        })
+
         // hover tracks when play
         $$('.content__sing-wrap').forEach((element, index) => {
             let orderNumber = element.querySelector('.order_number');
@@ -243,6 +252,17 @@ const TrackPlaylist = {
             `
         })
         allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
+
+        // play tracks when click
+        $$('.content__sing-wrap').forEach((element, index) => {
+            element.onclick = function () {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                $('.name__music').style.display = "block";
+                $('.img__played').style.display = "block";
+                _this.loadCurrentSong(dataTrack);
+            }
+        })
 
         // hover tracks when play
         $$('.content__sing-wrap').forEach((element, index) => {
@@ -321,6 +341,17 @@ const TrackPlaylist = {
         })
         allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
 
+        // play tracks when click
+        $$('.content__sing-wrap').forEach((element, index) => {
+            element.onclick = function () {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                $('.name__music').style.display = "block";
+                $('.img__played').style.display = "block";
+                _this.loadCurrentSong(dataTrack);
+            }
+        })
+
         // hover tracks when play
         $$('.content__sing-wrap').forEach((element, index) => {
             let orderNumber = element.querySelector('.order_number');
@@ -397,6 +428,17 @@ const TrackPlaylist = {
             `
         })
         allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
+
+        // play tracks when click
+        $$('.content__sing-wrap').forEach((element, index) => {
+            element.onclick = function () {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                $('.name__music').style.display = "block";
+                $('.img__played').style.display = "block";
+                _this.loadCurrentSong(dataTrack);
+            }
+        })
 
         // hover tracks when play
         $$('.content__sing-wrap').forEach((element, index) => {
@@ -475,6 +517,17 @@ const TrackPlaylist = {
         })
         allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
 
+        // play tracks when click
+        $$('.content__sing-wrap').forEach((element, index) => {
+            element.onclick = function () {
+                _this.currentIndex = Number(element.getAttribute('data-Index'))
+                let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                $('.name__music').style.display = "block";
+                $('.img__played').style.display = "block";
+                _this.loadCurrentSong(dataTrack);
+            }
+        })
+
         // hover tracks when play
         $$('.content__sing-wrap').forEach((element, index) => {
             let orderNumber = element.querySelector('.order_number');
@@ -495,6 +548,7 @@ const TrackPlaylist = {
     },
     handlePlay: function () {
         let _this = this;
+
         // when click btn
         playBtn.onclick = function () {
             if (_this.isPlaying) {
@@ -503,17 +557,19 @@ const TrackPlaylist = {
                 audio.play();
             }
         };
+
         // play song
         audio.onplay = function () {
             _this.isPlaying = true;
             playBtn.classList.add('playing');
-            // cdThumbAnimate.play();
         };
+
         // pause song
         audio.onpause = function () {
             _this.isPlaying = false;
             playBtn.classList.remove('playing');
-        }
+        };
+
         // update time for progress
         audio.ontimeupdate = function () {
             if (audio.duration) {
@@ -521,13 +577,13 @@ const TrackPlaylist = {
                 const progressPercentDuration = Math.floor(audio.duration / 100);
                 progress.value = progressPercent;
             }
-        }
+        };
 
         // khi tua song
         progress.onchange = function (e) {
             const seekTime = audio.duration / 100 * e.target.value;
             audio.currentTime = seekTime;
-        }
+        };
 
         // khi next bài hát
         btnNext.onclick = function () {
@@ -538,7 +594,7 @@ const TrackPlaylist = {
             }
             audio.play();
 
-        }
+        };
 
         // // khi prev bài hát
         btnPrev.onclick = function () {
@@ -567,16 +623,15 @@ const TrackPlaylist = {
         // }
 
         // // Xử lý next song khi ended bài hát
-        // audio.onended = function () {
-        //     if (_this.isRepeat) {
-        //         audio.play();
-        //     } else {
-        //         _this.nextSong();
-        //         _this.render();
-        //         audio.play();
-        //     }
-        //     // Hoặc dùng click --> btnNext.click(); --> vậy là nó tự động click luôn
-        // }
+        audio.onended = function () {
+            if (_this.isRepeat) {
+                audio.play();
+            } else {
+                _this.nextSong();
+                audio.play();
+            }
+            // Hoặc dùng click --> btnNext.click(); --> vậy là nó tự động click luôn
+        }
 
         // // Xử lý phats lại 1 bài hát
         // btnRepeat.onclick = function () {
@@ -585,27 +640,37 @@ const TrackPlaylist = {
         // }
 
     },
-    loadCurrentSong: async function () {
-        let dataTrack = this.allTracksPlaylist.song.items[this.currentIndex];
-        this.dataAllTracks = this.allTracksPlaylist.song.items;
-        console.log(dataTrack)
+    loadCurrentSong: async function (prop) {
+        if (prop?.type === "newly-play") {
+            console.log(1)
+            this.dataAllTracks = prop.dataAllTracks;
+            this.dataTrack = prop.dataTrack;
+        } else {
+            this.dataAllTracks = this.allTracksPlaylist.song.items;
+            this.dataTrack = prop;
+        }
         const desTrackPlay = `
         <div class="desc_song-play">
-            <p class="title_song-play">${dataTrack.title}</p>
-            <p class="title_single-play">${dataTrack.artistsNames}</p>
+            <p class="title_song-play">${this.dataTrack.title}</p>
+            <p class="title_single-play">${this.dataTrack.artistsNames}</p>
         </div>
         `
         $('.name__music').innerHTML = desTrackPlay;
-        $('.img__played').innerHTML = `<img class="img_song-play" src="${dataTrack.thumbnailM}" alt="">`
-        
-
-        await fetch(END_POINT + `/song?id=${dataTrack.encodeId}`)
+        $('.img__played').innerHTML = `<img class="img_song-play" src="${this.dataTrack.thumbnailM}" alt="">`
+        console.log(this.dataTrack)
+        // get song
+        await fetch(END_POINT + `/song?id=${this.dataTrack.encodeId}`)
             .then(respone => respone.json())
             .then(data => this.track = data["data"]["128"])
         audio.src = this.track;
-        audio.play();
-        playBtn.classList.add('playing');
-        this.handlePlay();
+        console.log(prop.status)
+        if (prop?.status === "pause") {
+            audio.pause();
+        }else{
+            audio.play();
+            playBtn.classList.add('playing');
+            this.handlePlay();
+        }
 
     },
     nextSong: function () {
