@@ -186,11 +186,16 @@ html {
 }
 
 .container__maincontent {
-    width: 74%;
-    padding-top: 10px;
     position: relative;
     height: 100%;
+    width: 85%;
+    margin: 0 auto;
+    padding: 5px 20px 30px;
 
+}
+
+.head_title-musicHot{
+    margin-bottom: 50px !important;
 }
 
 .nav__main {
@@ -1128,6 +1133,17 @@ html {
     margin: 0 auto;
 }
 
+.time_music{
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.current_time, .total_time{
+    color: #fff;
+    font-size: 13px;
+}
+
 /* mobile */
 @media only screen and (max-width: 46.1875em) {
 
@@ -1200,6 +1216,7 @@ html {
 
     .container__audio {
         display: none;
+        padding-bottom: 5px;
     }
 
     .desc__contentmain {
@@ -1508,11 +1525,6 @@ html {
     display: none;
 }
 
-.container__maincontent {
-    width: 85%;
-    margin: 0 auto;
-    padding: 5px 20px;
-}
 
 .infor__playlist {
     background-color: #efefef;
@@ -1532,6 +1544,9 @@ html {
     background-color: #000;
     color: #fff;
     padding: 0 10px 0 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
 }
 
 .icon__home-main {
@@ -1559,6 +1574,8 @@ html {
     border-top: 1px solid #fff;
     padding: 10px 20px;
     align-items: center;
+    position: relative;
+    margin-top: 65px;
 }
 
 .categories {

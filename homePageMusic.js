@@ -69,6 +69,14 @@ const HomePageMusic = {
     oldIndex: 0,
     clickSong: 0,
     handleRenderMusic: async function () {
+        // when scroll
+        document.onscroll = function(e) {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+           if(scrollTop >0){
+            console.log("hi")
+           }
+        }
+
         let _this = this;
         // data categories
         await fetch('http://localhost:3000/api/home?page=1')
@@ -135,11 +143,7 @@ const HomePageMusic = {
             element.onclick = function (e) {
                 // click different song
                 const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
-                console.log(songIndex)
-                _this.clickSong++;
-                console.log(_this.clickSong)
                 if (songIndex) {
-                    console.log(111)
                     let orderNumber = element.querySelector('.order_number');
                     _this.currentIndex = Number(element.getAttribute('data-Index'));
                     _this.isPlaying = true;
@@ -169,6 +173,7 @@ const HomePageMusic = {
 
                     // change icon play
                     $('.play_track-play-main').classList.add('playing');
+                    console.log("? do day")
                     TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, dataAllTrack });
 
 
@@ -177,7 +182,8 @@ const HomePageMusic = {
                     // click to pause
                     let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
                     let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
-                    if (_this.clickSong % 2 === 0) {
+                    if (_this.isPlaying) {
+                        _this.isPlaying = false;
                         orderNumber.style.display = "none";
                         toolplay.style.display = "block";
                         iconPlay.style.display = "block";
@@ -201,7 +207,7 @@ const HomePageMusic = {
 
             element.onmouseover = function (e) {
                 _this.currentIndex = Number(element.getAttribute('data-Index'))
-                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 !== 0) {
+                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.isPlaying) {
                     orderNumber.style.display = "none";
                     toolplay.style.display = "block";
                     iconPlay.style.display = "none";
@@ -217,21 +223,12 @@ const HomePageMusic = {
             element.onmouseout = function (e) {
                 _this.currentIndex = Number(element.getAttribute('data-Index'))
                 let valueSingPlaying = element.querySelector('.name_sing').textContent;
-                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 !== 0) {
-                    console.log("l1")
+                if (_this.dataTrackPlaying.title === valueSingPlaying && _this.isPlaying) {
                     orderNumber.style.display = "none";
                     toolplay.style.display = "block";
                     iconPlay.style.display = "none";
                     iconPause.style.display = "block";
-                }
-                // else if (_this.dataTrackPlaying.title === valueSingPlaying && _this.clickSong % 2 === 0) {
-                //     orderNumber.style.display = "none";
-                //     toolplay.style.display = "block";
-                //     iconPlay.style.display = "block";
-                //     iconPause.style.display = "none";
-                // }
-                else {
-                    console.log("l2")
+                } else {
                     orderNumber.style.display = "block";
                     toolplay.style.display = "none";
                     iconPlay.style.display = "none";
@@ -325,21 +322,8 @@ const HomePageMusic = {
 
     handleEventSearch: function () {
         let _this = this;
-        // translateSearch
-        document.querySelector('.search').onclick = function () {
-            mainInforTracks.style.display = "none";
-            $('.search').style.color = "#fff";
-            iconHeadLeft.style.color = "#fff";
-            // mainPage.style.color = "#9c9c9c";
-            mainContent.style.display = "none";
-            $('.content_search').style.display = "block";
-            $('.content_search-mobile').style.display = "none";
-            tracksInforSearch.style.display = "none";
-        }
         // return mainContent when search
         iconHeadLeft.onclick = function () {
-            $('.search').style.color = "#b3b3b3";
-            $('.home').style.color = "#fff";
             iconHeadLeft.style.color = "#9c9c9c";
             mainContent.style.display = "block";
             $('.content_search').style.display = "none";
@@ -349,8 +333,6 @@ const HomePageMusic = {
 
         // when click homeMain
         mainPage.onclick = function () {
-            $('.search').style.color = "#b3b3b3";
-            $('.home').style.color = "#fff";
             iconHeadLeft.style.color = "#9c9c9c";
             mainContent.style.display = "block";
             $('.content_search').style.display = "none";
@@ -365,8 +347,6 @@ const HomePageMusic = {
             if (e.key === "Enter") {
                 // icon left
                 iconHeadLeft.onclick = function () {
-                    $('.search').style.color = "#b3b3b3";
-                    $('.home').style.color = "#fff";
                     iconHeadLeft.style.color = "#9c9c9c";
                     mainContent.style.display = "block";
                     $('.content_search').style.display = "none";
@@ -412,8 +392,6 @@ const HomePageMusic = {
 
                     // icon left
                     iconHeadLeft.onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -441,8 +419,6 @@ const HomePageMusic = {
 
                     // icon left
                     iconHeadLeft.onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -468,8 +444,6 @@ const HomePageMusic = {
 
                     // icon left
                     iconHeadLeft.onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -495,8 +469,6 @@ const HomePageMusic = {
 
                     // icon left
                     iconHeadLeft.onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -536,8 +508,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -573,8 +543,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -609,8 +577,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -645,8 +611,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -681,8 +645,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
@@ -717,8 +679,6 @@ const HomePageMusic = {
                     $('.icon_action').style.display = "none";
                     $('.title_sing-wrap ').style.display = "none";
                     $('.left_icon-mobile').onclick = function () {
-                        $('.search').style.color = "#b3b3b3";
-                        $('.home').style.color = "#fff";
                         iconHeadLeft.style.color = "#9c9c9c";
                         $('.nav__search').style.display = "none";
                         mainContent.style.display = "block";
