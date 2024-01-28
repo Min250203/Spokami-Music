@@ -174,7 +174,7 @@ const HomePageMusic = {
                     // change icon play
                     $('.play_track-play-main').classList.add('playing');
                     console.log("? do day")
-                    TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, dataAllTrack });
+                    TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
 
 
 
@@ -189,7 +189,7 @@ const HomePageMusic = {
                         iconPlay.style.display = "block";
                         iconPause.style.display = "none";
                         element.classList.remove('active_playing-track');
-                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, dataAllTrack, status: "pause" });
+                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, status: "pause" });
                     }
                 }
 
