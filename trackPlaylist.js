@@ -6,6 +6,7 @@ const btnNext = $('.btn-next');
 const btnPrev = $('.btn-prev');
 const playBtn = $(".btn-toggle-play");
 const srcAudio = $(".src-audio");
+const listNewlyTracks = $('.list_musicNewly');
 
 const END_POINT = "http://localhost:3000/api/";
 
@@ -129,6 +130,7 @@ const TrackPlaylist = {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "block";
                         iconPause.style.display = "none";
+                        playBtn.classList.remove('playing');
                         element.classList.remove('active_playing-track');
                         TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack, status: "pause" });
                     }
@@ -973,15 +975,25 @@ const TrackPlaylist = {
         };
 
         // play song
-        audio.onplay = function () {
+        audio.onplay = function (prop) {
             _this.isPlaying = true;
             playBtn.classList.add('playing');
+           $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
+           $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+            // newly lunched
+            let hello = listNewlyTracks.querySelector(`.content_music-new="${_this.currentIndex}"]`)
+            console.log(hello)
+
+          
+          
         };
 
         // pause song
-        audio.onpause = function () {
+        audio.onpause = function (prop) {
             _this.isPlaying = false;
             playBtn.classList.remove('playing');
+            $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+            $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "block";
         };
 
         // update time for progress
@@ -1070,16 +1082,15 @@ const TrackPlaylist = {
 
     },
     loadCurrentSong: async function (prop) {
+        console.log(prop)
         // if (prop?.type === "newly-play" || prop?.type === "tracks-play") {
         //     this.dataTrack = prop.dataTrack;
-        //     console.log("newly lunch")
         // } else {
         //     this.dataTrack = this.allTracksPlaylist.song.items[this.currentIndex];
         // }
         const desTrackPlay = `
         <div class="desc_song-play">
             <p class="title_song-play">${prop?.type ? prop.dataTrack.title : this.allTracksPlaylist.song.items[this.currentIndex].title}</p>
-            <p class="title_single-play">${this.dataTrack.artistsNames}</p>
             <p class="title_single-play">${prop?.type ? prop.dataTrack.artistsNames : this.allTracksPlaylist.song.items[this.currentIndex].artistsNames}}</p>
             
         </div>
@@ -1087,14 +1098,15 @@ const TrackPlaylist = {
         $('.name__music').innerHTML = desTrackPlay;
         $('.img__played').innerHTML = `<img class="img_song-play" src="${prop?.type ? prop.dataTrack.thumbnailM : this.allTracksPlaylist.song.items[this.currentIndex].thumbnailM}" alt="">`
         // get song
-        await fetch(END_POINT + `/song?id=${this.dataTrack.encodeId}`)
+        await fetch(END_POINT + `/song?id=${prop?.type ? prop.dataTrack.encodeId : this.allTracksPlaylist.song.items[this.currentIndex].encodeId}`)
             .then(respone => respone.json())
             .then(data => this.track = data["data"]["128"])
         audio.src = this.track;
         if (prop?.status === "pause") {
-            audio.pause();
+            audio.pause(prop?.iconTrackPlay? prop.iconTrackPlay: '');
+            playBtn.classList.remove('playing');
         } else {
-            audio.play();
+            audio.play(prop?.iconTrackPause? prop.iconTrackPause: '');
             playBtn.classList.add('playing');
             this.handlePlay();
         }
