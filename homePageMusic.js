@@ -84,9 +84,9 @@ const HomePageMusic = {
             .then(data => {
                 _this.playlistMusicForU = data.data.items.filter((item) => item.sectionId == "hSlider");
                 _this.playlistMusicNewlyLunched = data.data.items.filter((item) => item.sectionType == "new-release");
-                _this.playlistMusicMood = data.data.items.filter((item) => item.sectionId == "hEditorTheme4");
-                _this.playlistMusicChill = data.data.items.filter((item) => item.sectionId == "hEditorTheme");
-                _this.playlistMusicSpring = data.data.items.filter((item) => item.sectionId == "hSeasonTheme");
+                _this.playlistMusicMood = data.data.items[3];
+                _this.playlistMusicChill = data.data.items[4];
+                _this.playlistMusicSpring = data.data.items[5];
                 _this.playlistMusicTop = data.data.items.filter((item) => item.sectionId == "h100");
                 _this.playlistMusicHot = data.data.items.filter((item) => item.sectionId == "hAlbum");
 
@@ -239,7 +239,7 @@ const HomePageMusic = {
         })
 
         // render banner Music Mood
-        const listMusicMood = _this.playlistMusicMood[0].items.slice(0, 6).map((item, index) => {
+        const listMusicMood = _this.playlistMusicMood.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistMood = item.encodeId;
             _this.bannerMood = item.thumbnailM;
 
@@ -254,9 +254,10 @@ const HomePageMusic = {
                     `
         })
         musicMood.innerHTML = listMusicMood.join("");
+        $('.head__title-tab1').innerHTML = `<h2 class="title-tab">${_this.playlistMusicMood.title}</h2>`;
 
         // render banner Music Chill
-        const listmusicChill = _this.playlistMusicChill[0].items.slice(0, 6).map((item, index) => {
+        const listmusicChill = _this.playlistMusicChill.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistChill = item.encodeId;
             _this.bannerChill = item.thumbnailM;
 
@@ -270,9 +271,11 @@ const HomePageMusic = {
                 `
         })
         musicChill.innerHTML = listmusicChill.join("");
+        $('.head__title-tab2').innerHTML = `<h2 class="title-tab">${_this.playlistMusicChill.title}</h2>`;
+        
 
         // render banner Music Spring
-        const list__musicSpring = _this.playlistMusicSpring[0].items.slice(0, 6).map((item, index) => {
+        const list__musicSpring = _this.playlistMusicSpring.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistSpring = item.encodeId;
             _this.bannerSpring = item.thumbnailM;
 
@@ -286,9 +289,12 @@ const HomePageMusic = {
                 `
         })
         musicSping.innerHTML = list__musicSpring.join("");
+        $('.head__title-tab3').innerHTML = `<h2 class="title-tab">${_this.playlistMusicSpring.title}</h2>`;
+
 
         // render banner Music Top 100
         const list__musicTop = _this.playlistMusicTop[0].items.slice(0, 6).map((item, index) => {
+            console.log(item)
             _this.idPlaylistTop = item.encodeId;
             _this.bannerTop = item.thumbnailM;
 
@@ -302,6 +308,8 @@ const HomePageMusic = {
                 `
         })
         musicTop.innerHTML = list__musicTop.join("");
+        $('.head__title-tab4').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTop[0].title}</h2>`;
+
 
         // render banner Music Hot
         const list__musicHot = _this.playlistMusicHot[0].items.slice(0, 6).map((item, index) => {
@@ -318,6 +326,8 @@ const HomePageMusic = {
                 `
         })
         musicHot.innerHTML = list__musicHot.join("");
+        $('.head__title-tab5').innerHTML = `<h2 class="title-tab">${_this.playlistMusicHot[0].title}</h2>`;
+        
 
     },
 

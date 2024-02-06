@@ -837,6 +837,14 @@ html {
     border-radius: 10px;
 }
 
+.active_playing-track{
+    background-color: #d3c9c9;
+}
+
+.active_playing-track:hover{
+    background-color: #d3c9c9;
+}
+
 .title_sing-wrap-search,
 .content__sing-wrap-search {
     display: grid;
@@ -962,11 +970,6 @@ html {
     background-color: #fff;
     color: #000;
 }
-
-.active_playing-track{
-    background-color: red;
-}
-
 
 .header__infor-allsearch {
     display: flex;
