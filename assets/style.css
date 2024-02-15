@@ -626,9 +626,9 @@ html {
 .content__infor-albums,
 .list_albums-relate,
 
-.list__musicMood,
-.list__musicChill,
-.list__musicSpring,
+.list__musicTab1,
+.list__musicTab2,
+.list__musicTab3,
 .list__musicHot,
 .list__musicTop {
     display: grid;
@@ -1169,9 +1169,9 @@ html {
 
     .content__infor-albums,
     .list_albums-relate,
-    .list__musicMood,
-    .list__musicChill,
-    .list__musicSpring {
+    .list__musicTab1,
+    .list__musicTab2,
+    .list__musicTab3 {
         display: grid;
         grid-template-columns: repeat(10, 153px);
         gap: 0px;
@@ -1442,9 +1442,9 @@ html {
 
     .content__infor-albums,
     .list_albums-relate,
-    .list__musicMood,
-    .list__musicChill,
-    .list__musicSpring {
+    .list__musicTab1,
+    .list__musicTab2,
+    .list__musicTab3 {
         grid-template-columns: repeat(10, 176px);
         overflow-x: scroll;
     }

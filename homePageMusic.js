@@ -4,10 +4,10 @@ import TrackPlaylist from "./trackPlaylist.js";
 
 const searchInput = $('.nav__search-input');
 const musicFor = $('.list__musicForU');
-const musicMood = $('.list__musicMood');
-const musicChill = $('.list__musicChill');
-const musicSping = $('.list__musicSpring');
 const musicMewlyLunched = $('.list_musicNewly');
+const musicTab1 = $('.list__musicTab1');
+const musicTab2 = $('.list__musicTab2');
+const musicTab3 = $('.list__musicTab3');
 const musicTop = $('.list__musicTop');
 const musicHot = $('.list__musicHot');
 const musicTrack = $('.playlistTracks');
@@ -38,9 +38,9 @@ const HomePageMusic = {
     artistID: '',
     albums: [],
     playlistMusicForU: [],
-    playlistMusicMood: [],
-    playlistMusicChill: [],
-    playlistMusicSpring: [],
+    playlistMusicTab1: [],
+    playlistMusicTab2: [],
+    playlistMusicTab3: [],
     playlistMusicNewlyLunched: [],
     playlistMusicTop: [],
     playlistMusicHot: [],
@@ -53,15 +53,15 @@ const HomePageMusic = {
     categoriesIDAcoustic: "",
     categoriesParameters: {},
     idPlaylistForU: '',
-    idPlaylistMood: '',
-    idPlaylistChill: '',
-    idPlaylistSpring: '',
+    idPlaylistTab1: '',
+    idPlaylistTab2: '',
+    idPlaylistTab3: '',
     idPlaylistTop: '',
     idPlaylistHot: '',
     bannerForU: '',
-    bannerMood: '',
-    bannerChill: '',
-    bannerSpring: '',
+    bannerTab1: '',
+    bannerTab2: '',
+    bannerTab3: '',
     bannerTop: '',
     bannerHot: '',
     isPlaying: false,
@@ -84,9 +84,9 @@ const HomePageMusic = {
             .then(data => {
                 _this.playlistMusicForU = data.data.items.filter((item) => item.sectionId == "hSlider");
                 _this.playlistMusicNewlyLunched = data.data.items.filter((item) => item.sectionType == "new-release");
-                _this.playlistMusicMood = data.data.items[3];
-                _this.playlistMusicChill = data.data.items[4];
-                _this.playlistMusicSpring = data.data.items[5];
+                _this.playlistMusicTab1 = data.data.items[3];
+                _this.playlistMusicTab2 = data.data.items[4];
+                _this.playlistMusicTab3 = data.data.items[5];
                 _this.playlistMusicTop = data.data.items.filter((item) => item.sectionId == "h100");
                 _this.playlistMusicHot = data.data.items.filter((item) => item.sectionId == "hAlbum");
 
@@ -239,9 +239,9 @@ const HomePageMusic = {
         })
 
         // render banner Music Mood
-        const listMusicMood = _this.playlistMusicMood.items.slice(0, 6).map((item, index) => {
-            _this.idPlaylistMood = item.encodeId;
-            _this.bannerMood = item.thumbnailM;
+        const list__musicTab1 = _this.playlistMusicTab1.items.slice(0, 6).map((item, index) => {
+            _this.idPlaylistTab1 = item.encodeId;
+            _this.bannerTab1 = item.thumbnailM;
 
             return `
                     <div class="card_box-sing playlist__render" data-Index=${index}>
@@ -253,13 +253,13 @@ const HomePageMusic = {
                 </div>
                     `
         })
-        musicMood.innerHTML = listMusicMood.join("");
-        $('.head__title-tab1').innerHTML = `<h2 class="title-tab">${_this.playlistMusicMood.title}</h2>`;
+        musicTab1.innerHTML = list__musicTab1.join("");
+        $('.head__title-tab1').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTab1.title}</h2>`;
 
         // render banner Music Chill
-        const listmusicChill = _this.playlistMusicChill.items.slice(0, 6).map((item, index) => {
-            _this.idPlaylistChill = item.encodeId;
-            _this.bannerChill = item.thumbnailM;
+        const list__musicTab2 = _this.playlistMusicTab2.items.slice(0, 6).map((item, index) => {
+            _this.idPlaylistTab2 = item.encodeId;
+            _this.bannerTab2 = item.thumbnailM;
 
             return `
                 <div class="card_box-sing playlist__render" data-Index=${index}>
@@ -270,14 +270,14 @@ const HomePageMusic = {
                 </div>
                 `
         })
-        musicChill.innerHTML = listmusicChill.join("");
-        $('.head__title-tab2').innerHTML = `<h2 class="title-tab">${_this.playlistMusicChill.title}</h2>`;
+        musicTab2.innerHTML = list__musicTab2.join("");
+        $('.head__title-tab2').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTab2.title}</h2>`;
         
 
         // render banner Music Spring
-        const list__musicSpring = _this.playlistMusicSpring.items.slice(0, 6).map((item, index) => {
-            _this.idPlaylistSpring = item.encodeId;
-            _this.bannerSpring = item.thumbnailM;
+        const list__musicTab3 = _this.playlistMusicTab3.items.slice(0, 6).map((item, index) => {
+            _this.idPlaylistTab3 = item.encodeId;
+            _this.bannerTab3 = item.thumbnailM;
 
             return `
                 <div class="card_box-sing playlist__render" data-Index=${index}>
@@ -288,8 +288,8 @@ const HomePageMusic = {
                 </div>
                 `
         })
-        musicSping.innerHTML = list__musicSpring.join("");
-        $('.head__title-tab3').innerHTML = `<h2 class="title-tab">${_this.playlistMusicSpring.title}</h2>`;
+        musicTab3.innerHTML = list__musicTab3.join("");
+        $('.head__title-tab3').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTab3.title}</h2>`;
 
 
         // render banner Music Top 100
@@ -496,6 +496,7 @@ const HomePageMusic = {
         let _this = this;
         // click playlist to return tracks music for u
         musicFor.onclick = function (e) {
+            console.log(111)
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
@@ -530,16 +531,16 @@ const HomePageMusic = {
         };
 
         // click playlist to return tracks music mood
-        musicMood.onclick = function (e) {
+        musicTab1.onclick = function (e) {
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
                 iconHeadLeft.style.color = "#fff";
                 let titlePlaylist = playlistIndex.querySelector('.title_singgle').innerText;
                 _this.currentIndex = Number(playlistIndex.getAttribute('data-Index'));
-                let bannerMood = _this.bannerMood;
-                let playlistMusicMood = _this.playlistMusicMood;
-                TrackPlaylist.handleRenderTracksMood({ bannerMood, playlistMusicMood, titlePlaylist });
+                let bannerTab1 = _this.bannerTab1;
+                let playlistMusicTab1 = _this.playlistMusicTab1;
+                TrackPlaylist.handleRenderTracksTab1({ bannerTab1, playlistMusicTab1, titlePlaylist });
 
                 mainContent.style.display = "none";
                 allTracks.style.display = "block";
@@ -565,16 +566,16 @@ const HomePageMusic = {
         };
 
         // click playlist to return tracks music Chill
-        musicChill.onclick = function (e) {
+        musicTab2.onclick = function (e) {
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
                 iconHeadLeft.style.color = "#fff";
                 let titlePlaylist = playlistIndex.querySelector('.title_singgle').innerText;
                 _this.currentIndex = Number(playlistIndex.getAttribute('data-Index'));
-                let playlistMusicChill = _this.playlistMusicChill;
-                let bannerChill = _this.bannerChill;
-                TrackPlaylist.handleRenderTracksChill({ bannerChill, playlistMusicChill, titlePlaylist });
+                let playlistMusicTab2 = _this.playlistMusicTab2;
+                let bannerTab2 = _this.bannerTab2;
+                TrackPlaylist.handleRenderTracksTab2({ bannerTab2, playlistMusicTab2, titlePlaylist });
                 mainContent.style.display = "none";
                 allTracks.style.display = "block";
                 albumRelateSearch.style.display = "none";
@@ -599,16 +600,16 @@ const HomePageMusic = {
         };
 
         // click playlist to return tracks music Spring
-        musicSping.onclick = function (e) {
+        musicTab3.onclick = function (e) {
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
                 iconHeadLeft.style.color = "#fff";
                 let titlePlaylist = playlistIndex.querySelector('.title_singgle').innerText;
                 _this.currentIndex = Number(playlistIndex.getAttribute('data-Index'));
-                let playlistMusicSpring = _this.playlistMusicSpring;
-                let bannerSpring = _this.bannerSpring;
-                TrackPlaylist.handleRenderTracksSpring({ bannerSpring, playlistMusicSpring, titlePlaylist });
+                let playlistMusicTab3 = _this.playlistMusicTab3;
+                let bannerTab3 = _this.bannerTab3;
+                TrackPlaylist.handleRenderTracksTab3({ bannerTab3, playlistMusicTab3, titlePlaylist });
                 mainContent.style.display = "none";
                 allTracks.style.display = "block";
                 albumRelateSearch.style.display = "none";

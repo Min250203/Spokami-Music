@@ -178,11 +178,11 @@ const TrackPlaylist = {
             }
         })
     },
-    handleRenderTracksMood: async function (props) {
+    handleRenderTracksTab1: async function (props) {
         let _this = this;
-        let PlaylistMood = props.playlistMusicMood[0].items.filter((item) => item.title === props.titlePlaylist)
+        let PlaylistTab1 = props.playlistMusicTab1.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistMood[0].encodeId}`)
+        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab1[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -193,7 +193,7 @@ const TrackPlaylist = {
         const htmlsInforPlaylistHeader = `
             <div class="playlist__header">
                 <div class="playlist_img">
-                    <img src="${PlaylistMood[0].thumbnailM}"
+                    <img src="${PlaylistTab1[0].thumbnailM}"
                         alt="">
                 </div>
                 <div class="categories_descr">
@@ -335,11 +335,11 @@ const TrackPlaylist = {
         })
 
     },
-    handleRenderTracksChill: async function (props) {
+    handleRenderTracksTab2: async function (props) {
         let _this = this;
-        let PlaylistChill = props.playlistMusicChill[0].items.filter((item) => item.title === props.titlePlaylist)
+        let PlaylistTab2 = props.playlistMusicTab2.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistChill[0].encodeId}`)
+        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab2[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -350,7 +350,7 @@ const TrackPlaylist = {
         const htmlsInforPlaylistHeader = `
             <div class="playlist__header">
                 <div class="playlist_img">
-                    <img src="${PlaylistChill[0].thumbnailM}"
+                    <img src="${PlaylistTab2[0].thumbnailM}"
                         alt="">
                 </div>
                 <div class="categories_descr">
@@ -492,11 +492,11 @@ const TrackPlaylist = {
         })
 
     },
-    handleRenderTracksSpring: async function (props) {
+    handleRenderTracksTab3: async function (props) {
         let _this = this;
-        let PlaylistSpring = props.playlistMusicSpring[0].items.filter((item) => item.title === props.titlePlaylist)
+        let PlaylistTab3 = props.playlistMusicTab3.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistSpring[0].encodeId}`)
+        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab3[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -507,7 +507,7 @@ const TrackPlaylist = {
         const htmlsInforPlaylistHeader = `
             <div class="playlist__header">
                 <div class="playlist_img">
-                    <img src="${PlaylistSpring[0].thumbnailM}"
+                    <img src="${PlaylistTab3[0].thumbnailM}"
                         alt="">
                 </div>
                 <div class="categories_descr">
@@ -978,14 +978,14 @@ const TrackPlaylist = {
         audio.onplay = function (prop) {
             _this.isPlaying = true;
             playBtn.classList.add('playing');
-           $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
-           $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+            $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
+            $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
             // newly lunched
-            let hello = listNewlyTracks.querySelector(`.content_music-new="${_this.currentIndex}"]`)
-            console.log(hello)
+            // let hello = listNewlyTracks.querySelector(`.content_music-new="${_this.currentIndex}"]`)
+            // console.log(hello)
 
-          
-          
+
+
         };
 
         // pause song
@@ -1088,6 +1088,8 @@ const TrackPlaylist = {
         // } else {
         //     this.dataTrack = this.allTracksPlaylist.song.items[this.currentIndex];
         // }
+
+
         const desTrackPlay = `
         <div class="desc_song-play">
             <p class="title_song-play">${prop?.type ? prop.dataTrack.title : this.allTracksPlaylist.song.items[this.currentIndex].title}</p>
@@ -1097,16 +1099,42 @@ const TrackPlaylist = {
         `
         $('.name__music').innerHTML = desTrackPlay;
         $('.img__played').innerHTML = `<img class="img_song-play" src="${prop?.type ? prop.dataTrack.thumbnailM : this.allTracksPlaylist.song.items[this.currentIndex].thumbnailM}" alt="">`
+
+        // when next track change focus and icon
+        let trackNext = $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`);
+        $$('.content__sing-wrap').forEach((e, i) => {
+            let trackIsPlaying = e.closest('.active_playing-track');
+            if (trackIsPlaying) {
+                this.oldIndex = Number(e.closest('.active_playing-track').getAttribute('data-Index'));
+                if (this.currentIndex !== this.oldIndex) {
+                    // oldTrack
+                    trackIsPlaying.classList.remove('active_playing-track');
+                    $(`.content__sing-wrap[data-Index="${this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                    $(`.content__sing-wrap[data-Index="${this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                    $(`.content__sing-wrap[data-Index="${this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                    // newTrack
+                    trackNext.classList.add('active_playing-track');
+                    
+                    $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.play_track-play-main').style.display = "block";
+                    $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                    $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
+                    $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.order_number').style.display = "none";
+                    
+                }
+                return;
+            }
+        });
+
         // get song
         await fetch(END_POINT + `/song?id=${prop?.type ? prop.dataTrack.encodeId : this.allTracksPlaylist.song.items[this.currentIndex].encodeId}`)
             .then(respone => respone.json())
             .then(data => this.track = data["data"]["128"])
         audio.src = this.track;
         if (prop?.status === "pause") {
-            audio.pause(prop?.iconTrackPlay? prop.iconTrackPlay: '');
+            audio.pause(prop?.iconTrackPlay ? prop.iconTrackPlay : '');
             playBtn.classList.remove('playing');
         } else {
-            audio.play(prop?.iconTrackPause? prop.iconTrackPause: '');
+            audio.play(prop?.iconTrackPause ? prop.iconTrackPause : '');
             playBtn.classList.add('playing');
             this.handlePlay();
         }
@@ -1118,6 +1146,7 @@ const TrackPlaylist = {
         if (this.currentIndex >= this.dataAllTracks.length) {
             this.currentIndex = 0;
         }
+
         this.loadCurrentSong();
     },
     prevSong: function () {
