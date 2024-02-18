@@ -9,6 +9,7 @@ const singleWrapSearch = $('.single_wrap-search');
 const singWrapSearch = $('.sing_wrap-search');
 const artistRelateWrap = $('.artist_box-wrap');
 const playlistWrapSearch = $('.playlist_box-wrap');
+const playlistInforSearch = $('.content__infor-playlist');
 const appearSingleWrapSearch = $('.appear_single-wrap');
 const albumsWrap = $('.album_box-wrap');
 const mainInforTracks = $('.children__content-playlist');
@@ -64,34 +65,38 @@ const SearchMusic = {
                     `
                 })
                 albumsInforSearch.forEach(element => { element.innerHTML = htmlsAlbumSearch.join("") })
-            } else if (_this.type === "playlist") {
-
-            } else if (_this.type === "sing") {
-                await fetch('https://api.spotify.com/v1/artists/' + _this.artistID + '/top-tracks' + '?market=VN&limit=50', _this.artistParameters)
-                    .then(response => response.json())
-                    .then(data => {
-                        return _this.tracksInfor = data.tracks;
-
-                    })
-                    .catch(error => console.error('Error:', error))
-                const htmlsTracks = _this.tracksInfor.map((item, index) => {
+            } else if (props.type === "playlist") {
+                const htmlsPlaylistSearch = _this.dataValueSearch.playlists.map((item, index) => {
+                    return `
+                        <div class="card_box-sing playlist__search" data-Index=${index}>
+                            <img class="img_singgle" src="${item.thumbnailM}"alt="">
+                            <div class="descr">
+                                <p class="title_singgle">${item.title}</p>
+                                <p class="desc_Singgle">${item.artistsNames}</p>
+                            </div>
+                        </div>
+                    `
+                })
+                playlistInforSearch.innerHTML = htmlsPlaylistSearch.join("");
+            } else if (props.type === "sing") {
+                const htmlsTracks = _this.dataValueSearch.songs.map((item, index) => {
                     return `
                                 <div class="content__sing-wrap-search">
                                     <div class="descr_sing-single-search">
                                         <div class="list__title_sing">
                                             <div class="order_number">${index + 1}</div>
                                             <div class="img_title_sing">
-                                                <img src="${item.album.images[0].url}"
+                                                <img src="${item.thumbnailM}"
                                                     alt="">
                                             </div>
                                             <div class="list__sing-singgle">
-                                                <p class="name_sing">${item.name}</p>
-                                                <p class="name_single">${item.artists[0].name}</p>
+                                                <p class="name_sing">${item.title}</p>
+                                                <p class="name_single">${item.artistsNames}</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="list_album">
-                                        <div class="name_album">${item.album.name}</div>
+                                        <div class="name_album">${item.album.title}</div>
 
                                     </div>
                                     <div class="list_clock">
@@ -101,6 +106,22 @@ const SearchMusic = {
                 `
                 })
                 tracksInforSearch.innerHTML = htmlsTracks.join("");
+
+                // hover tracks to prepair play
+                //  $$('.content__sing-wrap-search').forEach((element, index) => {
+                //     // let orderNumber = element.querySelector('.order_number');
+                //     let iconPlay = element.querySelector('.play_track-play');
+                //     let iconPlay_ = element.querySelector('.icon_play-tracks');
+                //     element.onmouseover = function (e) {
+                //         console.log(1)
+                //         _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
+                //         iconPlay.style.display = "block";
+                //         iconPlay_.style.fontSize = "17px";
+                //     }
+                //     element.onmouseout = function (e) {
+                //         iconPlay.style.display = "none";
+                //     }
+                // })
             } else {
                 // data Single for album and artist when search
                 await fetch(END_POINT + `/artist?name=${_this.dataValueSearch.artists[0].name}`)
@@ -111,8 +132,8 @@ const SearchMusic = {
                     })
                     .catch(error => console.error('Error:', error))
 
-                    // data Single for appear single when search
-                    await fetch(END_POINT+`/artistsong?id=${_this.dataValueSearch.artists[0].id}&page=1&count=10`)
+                // data Single for appear single when search
+                await fetch(END_POINT + `/artistsong?id=${_this.dataValueSearch.artists[0].id}&page=1&count=10`)
                     .then(response => response.json())
                     .then(data => {
                         _this.appearSingle = data.data.items;
@@ -166,12 +187,10 @@ const SearchMusic = {
                     element.onmouseover = function (e) {
                         console.log(1)
                         _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
-                            // orderNumber.style.display = "none";
-                            iconPlay.style.display = "block";
-                            iconPlay_.style.fontSize = "17px";
+                        iconPlay.style.display = "block";
+                        iconPlay_.style.fontSize = "17px";
                     }
                     element.onmouseout = function (e) {
-                        // orderNumber.style.display = "block";
                         iconPlay.style.display = "none";
                     }
                 })
@@ -200,8 +219,8 @@ const SearchMusic = {
                         </div>
                      `
                 })
-                const htmlArtistSearch = 
-                `
+                const htmlArtistSearch =
+                    `
                 <div class="card_box-sing playlist__search">
                     <img class="img_singgle" src="${_this.dataValueSearch.artists[0].thumbnailM}" alt="">
                     <p class="title_singgle">${_this.dataValueSearch.artists[0].name}</p>
