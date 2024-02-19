@@ -934,13 +934,11 @@ html {
 
 .play_track-play {
     display: none;
-    position: absolute;
-    left: 17px;
 }
 
 
 .title_tracks-single {
-    color: #fff;
+    color: #000;
     font-size: 22px;
     font-weight: 600;
 }
@@ -999,12 +997,29 @@ html {
     border-radius: 6px;
 }
 
+.content_tracks-single:hover{
+    background-color: #e3e3d5;
+    border-radius: 6px;
+}
+
+.content_tracks-single{
+    padding: 10px;
+}
+
+.content__sing-wrap-search{
+    padding: 10px;
+}
+
+.content__sing-wrap-search:hover{
+    background-color: #e3e3d5;
+    border-radius: 6px;
+}
+
 .sing_wrap {
     display: grid;
     grid-template-columns: 65% 35%;
     gap: 20px;
     padding: 7px;
-    position: relative;
 }
 
 .list_clock {
@@ -1575,4 +1590,8 @@ html {
 
 .playlists-search{
     margin-bottom: 55px;
+}
+
+.result-album{
+    margin-bottom: 50px;
 }

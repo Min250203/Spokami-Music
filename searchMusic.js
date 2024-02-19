@@ -1,6 +1,7 @@
 
 import TracksAlbum from "./tracksAlbum.js";
 import TopTracksSingle from "./topTracksSingle.js";
+import TrackPlaylist from "./trackPlaylist.js";
 
 const albumsInforSearch = $$('.content__infor-albums');
 const tracksInforSearch = $('.tracks-search');
@@ -38,6 +39,8 @@ const SearchMusic = {
     artistSearch: [],
     appearSingle: [],
     indexTracksPlaylist: 0,
+    oldIndex: 0,
+    typeSearch: "artist",
     handleSearch: async function (props) {
         let _this = this;
         if (props) {
@@ -80,11 +83,22 @@ const SearchMusic = {
                 playlistInforSearch.innerHTML = htmlsPlaylistSearch.join("");
             } else if (props.type === "sing") {
                 const htmlsTracks = _this.dataValueSearch.songs.map((item, index) => {
+                    // // total time music
+                    let time = Math.floor(item.duration)
+                    let totalHours = parseInt(time / 3600);
+                    let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
+                    let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
+                    let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
+
                     return `
-                                <div class="content__sing-wrap-search">
+                                <div class="content__sing-wrap-search" data-Index=${index}>
                                     <div class="descr_sing-single-search">
                                         <div class="list__title_sing">
-                                            <div class="order_number">${index + 1}</div>
+                                        <div class="order_number">${index + 1}</div>
+                                        <div class="play_track-play-main">
+                                            <i class="fa-solid fa-play icon_play-tracks"></i>
+                                            <i class="fas fa-pause icon_pause-tracks"></i>
+                                        </div>
                                             <div class="img_title_sing">
                                                 <img src="${item.thumbnailM}"
                                                     alt="">
@@ -100,28 +114,103 @@ const SearchMusic = {
 
                                     </div>
                                     <div class="list_clock">
-                                        <div class="time-clock">2 phút</div>
+                                        <div class="time-clock">${totalNumberOftotalSeconds}</div>
                                     </div>
                                 </div>
                 `
                 })
                 tracksInforSearch.innerHTML = htmlsTracks.join("");
 
-                // hover tracks to prepair play
-                //  $$('.content__sing-wrap-search').forEach((element, index) => {
-                //     // let orderNumber = element.querySelector('.order_number');
-                //     let iconPlay = element.querySelector('.play_track-play');
-                //     let iconPlay_ = element.querySelector('.icon_play-tracks');
-                //     element.onmouseover = function (e) {
-                //         console.log(1)
-                //         _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
-                //         iconPlay.style.display = "block";
-                //         iconPlay_.style.fontSize = "17px";
-                //     }
-                //     element.onmouseout = function (e) {
-                //         iconPlay.style.display = "none";
-                //     }
-                // })
+                // play tracks when click
+                $$('.content__sing-wrap-search').forEach((element, index) => {
+                    let orderNumber = element.querySelector('.order_number');
+                    let iconPlay = element.querySelector('.icon_play-tracks');
+                    let iconPause = element.querySelector('.icon_pause-tracks');
+                    let toolplay = element.querySelector('.play_track-play-main');
+                    element.onclick = function (e) {
+                        // click different song
+                        const songIndex = e.target.closest('.content__sing-wrap-search:not(.active_playing-track)');
+                        if (songIndex) {
+                            let orderNumber = element.querySelector('.order_number');
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.content__sing-wrap-search[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.content__sing-wrap-search[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.content__sing-wrap-search[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                $(`.content__sing-wrap-search[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                            }
+                            _this.dataTrackPlaying = _this.dataValueSearch.songs[_this.currentIndex];
+                            let dataTrack = _this.dataValueSearch.songs[_this.currentIndex];
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show icon
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change icon play
+                            $('.play_track-play-main').classList.add('playing');
+                             TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack });
+                        } else {
+                            // click to pause
+                            let dataTrack = _this.dataValueSearch.songs[_this.currentIndex];
+                            if (_this.isPlaying) {
+                                _this.isPlaying = false;
+                                orderNumber.style.display = "none";
+                                toolplay.style.display = "block";
+                                iconPlay.style.display = "block";
+                                iconPause.style.display = "none";
+                                element.classList.remove('active_playing-track');
+                                TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, status: "pause" });
+                            }
+                        }
+                    }
+                })
+                // hover tracks when play
+                $$('.content__sing-wrap-search').forEach((element, index) => {
+                    let orderNumber = element.querySelector('.order_number');
+                    let iconPlay = element.querySelector('.icon_play-tracks');
+                    let iconPause = element.querySelector('.icon_pause-tracks');
+                    let toolplay = element.querySelector('.play_track-play-main');
+                    let valueSingPlaying = element.querySelector('.name_sing').textContent;
+
+                    element.onmouseover = function (e) {
+                        _this.currentIndex = Number(element.getAttribute('data-Index'))
+                        if (_this.dataTrackPlaying?.title === valueSingPlaying && _this.isPlaying) {
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+                        } else {
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "block";
+                            iconPause.style.display = "none";
+                        }
+                    }
+
+                    element.onmouseout = function (e) {
+                        _this.currentIndex = Number(element.getAttribute('data-Index'))
+                        let valueSingPlaying = element.querySelector('.name_sing').textContent;
+                        if (_this.dataTrackPlaying?.title === valueSingPlaying && _this.isPlaying) {
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+                        } else {
+                            orderNumber.style.display = "block";
+                            toolplay.style.display = "none";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "none";
+                        }
+                    }
+                })
             } else {
                 // data Single for album and artist when search
                 await fetch(END_POINT + `/artist?name=${_this.dataValueSearch.artists[0].name}`)
@@ -142,7 +231,7 @@ const SearchMusic = {
                 // inforSingle when search
                 const htmlsInforSinglelSearch =
                     `
-                    <div div div div div class="single-wrap">
+                    <div class="single-wrap head__infor-search">
                         <div class="img_single-search">
                             <img src="${_this.dataValueSearch.artists[0].thumbnailM}" alt="">
                         </div>
@@ -152,18 +241,33 @@ const SearchMusic = {
                 `
                 singleWrapSearch.innerHTML = htmlsInforSinglelSearch;
 
-                // when click infor single
-                _this.handleEventTopTracks();
+                if (_this.typeSearch === "artist") {
+                    // when click infor single
+                    let dataSong = _this.dataValueSearch.songs
+                    _this.handleEventInforSearch(dataSong);
+                } else {
+                    console.log("khi nào tìm bài hát")
+                }
 
                 // top tracks when search single
-                const htmlsTracksInforAllSearch = _this.dataValueSearch.songs.slice(4, 8).map((item, index) => {
+                const htmlsTracksInforAllSearch = _this.dataValueSearch.songs.slice(0, 4).map((item, index) => {
+                    // // total time music
+                    let time = Math.floor(item.duration)
+                    let totalHours = parseInt(time / 3600);
+                    let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
+                    let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
+                    let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
+
                     return `
                         <div class="sing_wrap" data-Index=${index}>
                             <div class="list__title_sing">
+                                <div class="play_track-play">
+                                <i class="fa-solid fa-play icon_play-tracks"></i>
+                                <i class="fas fa-pause icon_pause-tracks"></i>
+                                </div>
                                 <div class="img_title_sing">
                                     <img src="${item.thumbnailM}" alt="">
                                 </div>
-                                 <div class="play_track-play"><i class="fa-solid fa-play icon_play-tracks"></i></div>
                                 <div class="list__sing-search">
                                     <p class="name_sing">${item.title}</p>
                                     <p class="name_single">${item.artistsNames}</p>
@@ -171,7 +275,7 @@ const SearchMusic = {
                             </div>
                             <div class="list_clock">
                                 <i class="fa-regular fa-heart"></i>
-                                <div class="time-clock">2 phút</div>
+                                <div class="time-clock">${totalNumberOftotalSeconds}</div>
                                 <i class="fa-solid fa-ellipsis"></i>
                             </div>
                         </div>
@@ -179,19 +283,90 @@ const SearchMusic = {
                 })
                 singWrapSearch.innerHTML = htmlsTracksInforAllSearch.join('');
 
+                // click top tracks
+                $$('.sing_wrap').forEach((element, index) => {
+                    let orderNumber = element.querySelector('.order_number');
+                    let iconPlay = element.querySelector('.icon_play-tracks');
+                    let toolplay = element.querySelector('.play_track-play');
+                    let iconPause = element.querySelector('.icon_pause-tracks');
+                    element.onclick = function (e) {
+                        // click different song
+                        const songIndex = e.target.closest('.sing_wrap:not(.active_playing-track)');
+                        if (songIndex) {
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.sing_wrap[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.sing_wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.sing_wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                            }
+                            _this.dataTrackPlaying = _this.dataValueSearch.songs[_this.currentIndex];
+                            let dataTrack = _this.dataValueSearch.songs[_this.currentIndex];
+
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show icon
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change icon play
+                            $('.play_track-play').classList.add('playing');
+                            TrackPlaylist.loadCurrentSong({ type: "top-tracks", dataTrack });
+                        }
+                        else {
+                            // click to pause
+                            let dataTrack = _this.dataValueSearch.songs[_this.currentIndex];
+                            if (_this.isPlaying) {
+                                _this.isPlaying = false;
+                                orderNumber.style.display = "none";
+                                toolplay.style.display = "block";
+                                iconPlay.style.display = "block";
+                                iconPause.style.display = "none";
+                                element.classList.remove('active_playing-track');
+                                TrackPlaylist.loadCurrentSong({ type: "topTracks-play", dataTrack, status: "pause" });
+                            }
+                        }
+                    }
+                })
+
                 // hover tracks to prepair play
                 $$('.sing_wrap').forEach((element, index) => {
-                    // let orderNumber = element.querySelector('.order_number');
-                    let iconPlay = element.querySelector('.play_track-play');
-                    let iconPlay_ = element.querySelector('.icon_play-tracks');
+                    let iconPlay = element.querySelector('.icon_play-tracks');
+                    let iconPause = element.querySelector('.icon_pause-tracks');
+                    let toolplay = element.querySelector('.play_track-play');
+                    let valueSingPlaying = element.querySelector('.name_sing').textContent;
                     element.onmouseover = function (e) {
-                        console.log(1)
-                        _this.indexTracksPlaylist = Number(element.getAttribute('data-Index'))
-                        iconPlay.style.display = "block";
-                        iconPlay_.style.fontSize = "17px";
+                        _this.currentIndex = Number(element.getAttribute('data-Index'))
+                        if (_this.dataTrackPlaying?.title === valueSingPlaying && _this.isPlaying) {
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+                        } else {
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "block";
+                            iconPause.style.display = "none";
+                        }
                     }
+
                     element.onmouseout = function (e) {
-                        iconPlay.style.display = "none";
+                        _this.currentIndex = Number(element.getAttribute('data-Index'))
+                        let valueSingPlaying = element.querySelector('.name_sing').textContent;
+                        if (_this.dataTrackPlaying?.title === valueSingPlaying && _this.isPlaying) {
+                            // orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+                        } else {
+                            // orderNumber.style.display = "block";
+                            toolplay.style.display = "none";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "none";
+                        }
                     }
                 })
 
@@ -290,11 +465,9 @@ const SearchMusic = {
             element.onclick = function (e) {
                 const albumIndex = e.target.closest('.playlist__search');
                 if (albumIndex) {
-                    $('.search').style.color = "#fff";
                     iconHeadLeft.style.color = "#fff";
                     // icon left
                     iconHeadLeft.onclick = function () {
-                        $('.search').style.color = "#fff";
                         iconHeadLeft.style.color = "#fff";
                         contentSearch.style.display = "block";
                         allTracks.style.display = "none";
@@ -315,31 +488,28 @@ const SearchMusic = {
         })
 
     },
-    handleEventTopTracks: function () {
+    handleEventInforSearch: function (dataSong) {
         let _this = this;
         // infor single track
         singleWrapSearch.onclick = function (e) {
             const tracksSingle = e.target.closest('.single-wrap');
             if (tracksSingle) {
-                $('.search').style.color = "#fff";
                 iconHeadLeft.style.color = "#fff";
                 // icon left
                 iconHeadLeft.onclick = function () {
-                    $('.search').style.color = "#fff";
                     iconHeadLeft.style.color = "#fff";
                     contentSearch.style.display = "block";
                     allTracks.style.display = "none";
                 }
-                let artistID = _this.artistID;
-                let artistParameters = _this.artistParameters;
                 let type = "infor-Single";
+                let dataInforSingle = _this.dataValueSearch.artists[0];
                 contentSearch.style.display = "none";
                 allTracks.style.display = "block";
                 $('.nav__search').style.display = "none";
                 $('.list__Playlist').style.display = "none";
                 $('.list_Tracks-single').style.display = "flex";
                 $('.album_relate-active').style.display = "block";
-                TopTracksSingle.handleTracks({ artistID, artistParameters, type })
+                TopTracksSingle.handleTracks({ dataSong, type, dataInforSingle })
             }
 
         }
@@ -348,11 +518,9 @@ const SearchMusic = {
         artistRelateWrap.onclick = function (e) {
             const tracksSingle = e.target.closest('.card_box-sing');
             if (tracksSingle) {
-                $('.search').style.color = "#fff";
                 iconHeadLeft.style.color = "#fff";
                 // icon left
                 iconHeadLeft.onclick = function () {
-                    $('.search').style.color = "#fff";
                     iconHeadLeft.style.color = "#fff";
                     contentSearch.style.display = "block";
                     allTracks.style.display = "none";

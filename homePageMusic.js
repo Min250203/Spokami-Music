@@ -73,7 +73,6 @@ const HomePageMusic = {
         document.onscroll = function(e) {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
            if(scrollTop >0){
-            console.log("hi")
            }
         }
 
@@ -148,7 +147,6 @@ const HomePageMusic = {
                     _this.isPlaying = true;
                     element.classList.add('active_playing-track');
                     if (_this.currentIndex !== _this.oldIndex) {
-                        console.log("co do day c")
                         $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
                         $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
                         $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
@@ -159,7 +157,6 @@ const HomePageMusic = {
                     }
                     _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
                     let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
-                    let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
                     // show descr song
                     $('.name__music').style.display = "block";
                     $('.img__played').style.display = "block";
@@ -172,8 +169,6 @@ const HomePageMusic = {
 
                     // change icon play
                     $('.play_track-play-main').classList.add('playing');
-                    // let iconTrackPause = $(`.content_music-new[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks');
-                    // let iconTrackPlay = $(`.content_music-new[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks');
                     TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack});
 
 
@@ -192,9 +187,7 @@ const HomePageMusic = {
                         TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, status: "pause" });
                     }
                 }
-
             }
-
         })
         // hover tracks when play
         $$('.content_music-new').forEach((element, index) => {
@@ -291,7 +284,6 @@ const HomePageMusic = {
 
         // start render banner Music Top 100
         const list__musicTop = _this.playlistMusicTop[0].items.slice(0, 6).map((item, index) => {
-            console.log(item)
             _this.idPlaylistTop = item.encodeId;
             _this.bannerTop = item.thumbnailM;
 
@@ -343,7 +335,6 @@ const HomePageMusic = {
             $('.content_search').style.display = "none";
             $('.content_search-mobile').style.display = "none";
             mainInforTracks.style.display = "none";
-            console.log("hello search")
         }
 
         // when enter search
@@ -399,12 +390,9 @@ const HomePageMusic = {
                         mainContent.style.display = "block";
                         $('.content_search').style.display = "none";
                         mainInforTracks.style.display = "none";
-
                     }
-
                 }
 
-                // SearchMusic.start( ='all')
                 // when click albumSearch
                 albumSearch.onclick = function () {
                     _this.type = 'album';
@@ -426,7 +414,6 @@ const HomePageMusic = {
                         mainContent.style.display = "block";
                         $('.content_search').style.display = "none";
                         mainInforTracks.style.display = "none";
-
                     }
                 }
                 
@@ -469,7 +456,6 @@ const HomePageMusic = {
                     allInforSearch.style.display = "none";
                     let valueInput = e.target.value;
                     let type = 'sing';
-                    console.log("singgg")
                     SearchMusic.start({ valueInput, type })
 
                     // icon left
@@ -489,7 +475,6 @@ const HomePageMusic = {
         let _this = this;
         // click playlist to return tracks music for u
         musicFor.onclick = function (e) {
-            console.log(111)
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";

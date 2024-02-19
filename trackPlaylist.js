@@ -982,7 +982,6 @@ const TrackPlaylist = {
             $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
             // newly lunched
             // let hello = listNewlyTracks.querySelector(`.content_music-new="${_this.currentIndex}"]`)
-            // console.log(hello)
 
 
 
@@ -1082,7 +1081,6 @@ const TrackPlaylist = {
 
     },
     loadCurrentSong: async function (prop) {
-        console.log(prop)
         // if (prop?.type === "newly-play" || prop?.type === "tracks-play") {
         //     this.dataTrack = prop.dataTrack;
         // } else {
