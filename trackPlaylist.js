@@ -48,7 +48,15 @@ const TrackPlaylist = {
         headerInfor.innerHTML = htmlsInforPlaylistHeader;
 
         // render tracks
+        console.log(_this.allTracksPlaylist.song.items)
         const htmlsAllTracks = _this.allTracksPlaylist.song.items.map((item, index) => {
+            // // total time music
+            let time = Math.floor(item.duration)
+            let totalHours = parseInt(time / 3600);
+            let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
+            let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
+            let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
+
             return `
             <div class="content__sing-wrap content-wrap" data-Index=${index}>
                 <div class="descr_sing-single">
@@ -69,13 +77,13 @@ const TrackPlaylist = {
                     </div>
                 </div>
                 <div class="list_album">
-                    <div class="name_album">${item?.album?.title}</div>
+                    <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                 </div>
                 <div class="list_clock">
                     <div class="icon_like-mobile">
                         <i class="fa-regular fa-heart icon_like-mobile"></i>
                     </div>
-                    <div class="time-clock">2 phút</div>
+                    <div class="time-clock">${totalNumberOftotalSeconds}</div>
                     <i class="fa-solid fa-ellipsis"></i>
                 </div>
             </div>
@@ -226,7 +234,7 @@ const TrackPlaylist = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item?.album?.title}</div>
+                    <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                     </div>
                     <div class="list_clock">
                         <div class="icon_like-mobile">
@@ -383,7 +391,7 @@ const TrackPlaylist = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item?.album?.title}</div>
+                        <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                     </div>
                     <div class="list_clock">
                         <div class="icon_like-mobile">
@@ -540,7 +548,7 @@ const TrackPlaylist = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item?.album?.title}</div>
+                        <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                     </div>
                     <div class="list_clock">
                         <div class="icon_like-mobile">
@@ -697,7 +705,7 @@ const TrackPlaylist = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item?.album?.title}</div>
+                        <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                     </div>
                     <div class="list_clock">
                         <div class="icon_like-mobile">
@@ -854,7 +862,7 @@ const TrackPlaylist = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item?.album?.title}</div>
+                        <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                     </div>
                     <div class="list_clock">
                         <div class="icon_like-mobile">
@@ -1112,12 +1120,12 @@ const TrackPlaylist = {
                     $(`.content__sing-wrap[data-Index="${this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
                     // newTrack
                     trackNext.classList.add('active_playing-track');
-                    
+
                     $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.play_track-play-main').style.display = "block";
                     $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
                     $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
                     $(`.content__sing-wrap[data-Index="${this.currentIndex}"]`).querySelector('.order_number').style.display = "none";
-                    
+
                 }
                 return;
             }

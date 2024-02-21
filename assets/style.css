@@ -193,6 +193,13 @@ html {
     /* padding: 0px 20px 5px 30px; */
 }
 
+.desc__contentmain{
+    margin-bottom: 100px;
+}
+.all__tracks-main{
+    margin-bottom: 50px;
+}
+
 .active-show {
     display: none;
 }
@@ -218,7 +225,7 @@ html {
 .head__content-title {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    /* gap: 20px; */
     margin: 10px 0 20px 0;
 }
 
@@ -537,6 +544,7 @@ html {
 .option_music {
     display: flex;
     gap: 10px;
+    margin: 10px 0;
 }
 
 .btn_search {
@@ -611,6 +619,7 @@ html {
     grid-template-columns: repeat(6, 196px);
     gap: 15px;
     overflow-x: scroll;
+    margin-top: 10px;
 }
 
 .list__musicForU {
@@ -623,16 +632,25 @@ html {
     /* slider */
 }
 
-.list__musicForU {
+.artist_box-wrap{
+    grid-template-columns: repeat(3, 32%);
+    gap: 18px;
+    overflow-x: scroll;
+    justify-content: space-between;
+    overflow-x: auto;
+    margin-top: 10px;
+    
+}
+
+
+.list__musicForU, .artist_box-wrap {
     color: white;
     display: flex;
 }
 
-.slide_banner {
-    flex-shrink: 0;
-}
 
-.list__musicForU {
+
+.list__musicForU, .artist_box-wrap {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     -webkit-scroll-snap-points-x: repeat(300px);
@@ -650,6 +668,9 @@ html {
     padding: 0 !important;
 }
 
+.slide_banner {
+    flex-shrink: 0;
+}
 .all-wrap-search {
     display: flex;
     flex-direction: column;
@@ -657,7 +678,7 @@ html {
 }
 
 .appear_single-wrap,
-.artist_box-wrap,
+/* .artist_box-wrap, */
 .album_fan-wrap,
 .album_box-wrap,
 .playlist_box-wrap,
@@ -665,6 +686,7 @@ html {
     display: grid;
     grid-template-columns: repeat(6, 196px);
     gap: 15px;
+    margin-top: 10px;
 }
 
 .content__infor-playlist{
@@ -755,11 +777,14 @@ html {
     /* display: flex; */
 }
 
-.icon_action,
-.icon_action-mobile {
+.icon_action {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+}
+
+.icon_action-mobile{
+    display: none;
 }
 
 .action-left {
@@ -1087,6 +1112,7 @@ html {
     display: none;
     flex-direction: column;
     gap: 30px;
+    margin-bottom: 50px;
 }
 
 .content_search-mobile {
@@ -1124,7 +1150,7 @@ html {
 }
 
 .head_title-musicNewlyLunched {
-    height: 428px;
+    height: 410px;
 }
 
 .icon_clock {
@@ -1450,7 +1476,7 @@ html {
     }
 
     .appear_single-wrap,
-    .artist_box-wrap,
+    /* .artist_box-wrap, */
     .album_fan-wrap,
     .album_box-wrap,
     .playlist_box-wrap,
@@ -1593,5 +1619,17 @@ html {
 }
 
 .result-album{
+    /* margin-bottom: 50px; */
+}
+
+.list_tracks-wrap{
+    /* margin-bottom: 50px; */
+}
+
+.all_tracks-single{
+    margin-bottom: 50px;
+}
+
+.playlist__sings-wrap {
     margin-bottom: 50px;
 }
