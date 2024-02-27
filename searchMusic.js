@@ -22,8 +22,7 @@ const iconHeadLeft = $('.left');
 const cardSing = $$('.card_box-sing');
 const musicFor = $('.list__musicForU');
 
-const END_POINT = "http://localhost:3000/api/";
-
+const END_POINT = window.env.API_URL;
 
 const SearchMusic = {
     tracksInfor: [],
@@ -46,10 +45,11 @@ const SearchMusic = {
     tracksAppearSingle: [],
     tracksHotAppearMusic: {},
     tracksPlaylist: {},
+    status: 0,
     handleSearch: async function (props) {
         let _this = this;
         if (props) {
-            await fetch(END_POINT + `search?keyword=${props.valueInput}`)
+            await fetch(END_POINT + `/api/search?keyword=${props.valueInput}`)
                 .then(response => response.json())
                 .then(data => {
                     _this.dataValueSearch = data.data;
@@ -127,8 +127,7 @@ const SearchMusic = {
                                         </div>
                                     </div>
                                     <div class="list_album">
-                                        <div class="name_album">${item?.album?.title}</div>
-
+                                       <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
                                     </div>
                                     <div class="list_clock">
                                         <div class="time-clock">${totalNumberOftotalSeconds}</div>
@@ -230,7 +229,7 @@ const SearchMusic = {
                 })
             } else {
                 // data Single for album and artist when search
-                await fetch(END_POINT + `/artist?name=${_this.dataValueSearch.artists[0].alias}`)
+                await fetch(END_POINT + `/api//artist?name=${_this.dataValueSearch.artists[0].alias}`)
                     .then(response => response.json())
                     .then(data => {
                         console.log(data)
@@ -241,7 +240,7 @@ const SearchMusic = {
                     .catch(error => console.error('Error:', error))
 
                 // data Single for appear single when search
-                await fetch(END_POINT + `/artistsong?id=${_this.dataValueSearch.artists[0].id}&page=1&count=10`)
+                await fetch(END_POINT + `/api//artistsong?id=${_this.dataValueSearch.artists[0].id}&page=1&count=10`)
                     .then(response => response.json())
                     .then(data => {
                         _this.appearSingle = data.data.items;
@@ -541,11 +540,20 @@ const SearchMusic = {
             // infor single track
             if (props.tracksSingle) {
                 iconHeadLeft.style.color = "#fff";
+                _this.status = 1;
                 // icon left
                 iconHeadLeft.onclick = function () {
-                    iconHeadLeft.style.color = "#fff";
-                    contentSearch.style.display = "block";
-                    allTracks.style.display = "none";
+                    if(_this.status ===1){
+                        iconHeadLeft.style.color = "#fff";
+                        contentSearch.style.display = "block";
+                        allTracks.style.display = "none";
+                        _this.status =0;
+                    }else{
+                        iconHeadLeft.style.color = "#9c9c9c";
+                        mainContent.style.display = "block";
+                        $('.content_search').style.display = "none";
+                        mainInforTracks.style.display = "none";
+                    }
                 }
                 let type = "infor-Single";
                 let dataInforSingle = _this.dataValueSearch.artists[0];
@@ -561,17 +569,26 @@ const SearchMusic = {
         }
         else if (props.type === "appearSingle") {
             let idDetailPlaylist = _this.appearSingle.filter(item => item.title === props.titlePlaylist)
-            await fetch(END_POINT + `detailplaylist?id=${idDetailPlaylist[0].album.encodeId}`)
+            await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].album.encodeId}`)
                 .then(respone => respone.json())
                 .then(data => {
                     _this.tracksAppearSingle = data.data.song.items;
                 })
             iconHeadLeft.style.color = "#fff";
+            _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                iconHeadLeft.style.color = "#fff";
-                contentSearch.style.display = "block";
-                allTracks.style.display = "none";
+                if(_this.status ===1){
+                    iconHeadLeft.style.color = "#fff";
+                    contentSearch.style.display = "block";
+                    allTracks.style.display = "none";
+                    _this.status =0;
+                }else{
+                    iconHeadLeft.style.color = "#9c9c9c";
+                    mainContent.style.display = "block";
+                    $('.content_search').style.display = "none";
+                    mainInforTracks.style.display = "none";
+                }
             }
             let type = "appear-Single";
             let dataAppearSingle = _this.tracksAppearSingle;
@@ -589,18 +606,27 @@ const SearchMusic = {
         else if (props.type === "hotMusicForSing") {
             let idDetailPlaylist = _this.albums[5].items.filter(item => item.thumbnailM === props.titlePlaylist)
             console.log(idDetailPlaylist)
-            await fetch(END_POINT + `detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
+            await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
                 .then(respone => respone.json())
                 .then(data => {
                     console.log("data", data)
                     _this.tracksHotAppearMusic = data.data;
                 })
             iconHeadLeft.style.color = "#fff";
+            _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                iconHeadLeft.style.color = "#fff";
-                contentSearch.style.display = "block";
-                allTracks.style.display = "none";
+                if(_this.status ===1){
+                    iconHeadLeft.style.color = "#fff";
+                    contentSearch.style.display = "block";
+                    allTracks.style.display = "none";
+                    _this.status =0;
+                }else{
+                    iconHeadLeft.style.color = "#9c9c9c";
+                    mainContent.style.display = "block";
+                    $('.content_search').style.display = "none";
+                    mainInforTracks.style.display = "none";
+                }
             }
             let type = "hotAppear-Single";
             let dataHotAppearMusic = _this.tracksHotAppearMusic;
@@ -618,22 +644,30 @@ const SearchMusic = {
         else if (props.type === "tracksPlaylist") {
             let idDetailPlaylist = _this.dataValueSearch.playlists.filter(item => item.title === props.titlePlaylist)
             console.log(idDetailPlaylist)
-            await fetch(END_POINT + `detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
+            await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
                 .then(respone => respone.json())
                 .then(data => {
                     console.log("data", data)
                     _this.tracksPlaylist = data.data;
                 })
             iconHeadLeft.style.color = "#fff";
+            _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                iconHeadLeft.style.color = "#fff";
-                contentSearch.style.display = "block";
-                allTracks.style.display = "none";
+                if(_this.status ===1){
+                    iconHeadLeft.style.color = "#fff";
+                    contentSearch.style.display = "block";
+                    allTracks.style.display = "none";
+                    _this.status =0;
+                }else{
+                    iconHeadLeft.style.color = "#9c9c9c";
+                    mainContent.style.display = "block";
+                    $('.content_search').style.display = "none";
+                    mainInforTracks.style.display = "none";
+                }
             }
             let type = "playlist-Single";
             let dataPlaylist = _this.tracksPlaylist;
-            // let dataInforSingle = _this.dataValueSearch.artists[0];
             contentSearch.style.display = "none";
             allTracks.style.display = "block";
             $('.list__Playlist').style.display = "none";
@@ -644,44 +678,11 @@ const SearchMusic = {
             TopTracksSingle.handleTracks({ dataPlaylist, type })
 
         }
-
-        // infor artist track
-        // artistRelateWrap.onclick = function (e) {
-        //     const tracksSingle = e.target.closest('.card_box-sing');
-        //     if (tracksSingle) {
-        //         iconHeadLeft.style.color = "#fff";
-        //         // icon left
-        //         iconHeadLeft.onclick = function () {
-        //             iconHeadLeft.style.color = "#fff";
-        //             contentSearch.style.display = "block";
-        //             allTracks.style.display = "none";
-        //         }
-        //         let artistID = _this.artistID;
-        //         contentSearch.style.display = "none";
-        //         allTracks.style.display = "block";
-        //         $('.list__Playlist').style.display = "none";
-        //         $('.list_Tracks-single').style.display = "flex";
-        //         $('.album_relate-active').style.display = "none";
-        //         let type = "infor-RelateSingle";
-        //         let artistParameters = _this.artistParameters;
-        //         let artistRelate = _this.artistRelate;
-        //         // let itemSingle = _this.itemSingle;
-        //         let tilteArtistRelate = tracksSingle.querySelector('.title_singgle').innerText;
-        //         if (_this.itemSingle.artists[0].name === tilteArtistRelate) {
-        //             TopTracksSingle.handleTracks({ artistID, artistParameters, type: "infor-Single" })
-        //         } else {
-        //             TopTracksSingle.handleTracks({ tilteArtistRelate, artistParameters, type, artistRelate });
-        //         }
-
-        //     }
-        // }
-
     },
     start: async function (props) {
         this.handleSearch(props);
         this.handleEventAlbum();
     }
-
 }
 
 SearchMusic.start();

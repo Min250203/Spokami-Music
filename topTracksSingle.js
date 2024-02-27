@@ -184,6 +184,17 @@ const TopTracksSingle = {
 
             tracksFanLikeWrap.innerHTML = htmlTracksFanLike.join("");
 
+            // $$('.album_fan-wrap').forEach((element, index) => {
+            //     element.onclick = function (e) {
+            //         const tracksPlaylist = e.target.closest('.card_box-sing');
+            //         let titlePlaylist = tracksPlaylist.querySelector('.title_singgle').innerText;
+            //         let dataPlaylist = _this.dataValueSearch.playlists
+            //         console.log(dataPlaylist)
+            //         _this.handleEventInforSearch({ dataPlaylist, type: "tracksPlaylist", titlePlaylist });
+
+            //     }
+            // })
+
         }
         else if (props.type === "appear-Single") {
             this.dataAppearSingle = props.dataAppearSingle;
@@ -724,9 +735,10 @@ const TopTracksSingle = {
 
             tracksFanLikeWrap.innerHTML = htmlTracksFanLike.join("");
         }
+    }, 
+    // handleTracksFanLike: async function() {
         
-
-    }
+    // }
 }
 
 export default TopTracksSingle;

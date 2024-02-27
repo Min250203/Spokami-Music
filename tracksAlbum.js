@@ -11,8 +11,7 @@ const albumRelateSearch = $('.relate_albums-search');
 
 const titleRelate = $('.head__title-relate');
 
-const END_POINT = "http://localhost:3000/api/";
-
+const END_POINT = window.env.API_URL;
 
 const TracksAlbum = {
     tracksAlbum: [],
@@ -40,7 +39,7 @@ const TracksAlbum = {
                 `
         headerInfor.innerHTML = htmlsTracksAlbum;
 
-        await fetch(END_POINT + `detailplaylist?id=${tracksAlbumdata[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${tracksAlbumdata[0].encodeId}`)
             .then(respone => respone.json())
             .then(data => {
                 console.log(data)

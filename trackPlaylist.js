@@ -7,9 +7,11 @@ const btnPrev = $('.btn-prev');
 const playBtn = $(".btn-toggle-play");
 const srcAudio = $(".src-audio");
 const listNewlyTracks = $('.list_musicNewly');
+const mainContent = $('.desc__contentmain');
+const mainInforTracks = $('.all__tracks-main');
+const allTracks = $('.active-show');
 
-const END_POINT = "http://localhost:3000/api/";
-
+const END_POINT = window.env.API_URL;
 const TrackPlaylist = {
     allTracksPlaylist: [],
     allTracks: [],
@@ -21,75 +23,97 @@ const TrackPlaylist = {
     track: '',
     dataAllTracks: [],
     oldIndex: 0,
+    message: '',
     handleRenderTracksForU: async function (props) {
         let _this = this;
         let PlaylistForU = props.playlistMusicForU[0].items.filter((item) => item.banner === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistForU[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistForU[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
+                _this.message = data.msg;
             })
             .catch(error => console.error(error))
+
         //   inforHeader playlist
-        const htmlsInforPlaylistHeader = `
-            <div class="playlist__header">
-                <div class="playlist_img">
-                    <img src="${PlaylistForU[0].banner}"
-                        alt="">
-                </div>
-                <div class="categories_descr">
-                    <p class="name_playlist">${_this.allTracksPlaylist.textType}</p>
-                    <h1 class="playlist__title-header">${_this.allTracksPlaylist.title}</h1>
-                    <p class="playlist_descr"> ${_this.allTracksPlaylist.description}</p>
-                </div>
-            </div>
-            `
-        headerInfor.innerHTML = htmlsInforPlaylistHeader;
-
-        // render tracks
-        console.log(_this.allTracksPlaylist.song.items)
-        const htmlsAllTracks = _this.allTracksPlaylist.song.items.map((item, index) => {
-            // // total time music
-            let time = Math.floor(item.duration)
-            let totalHours = parseInt(time / 3600);
-            let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
-            let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
-            let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
-
-            return `
-            <div class="content__sing-wrap content-wrap" data-Index=${index}>
-                <div class="descr_sing-single">
-                    <div class="list__title_sing">
-                        <div class="order_number">${index + 1}</div>
-                        <div class="play_track-play-main">
-                        <i class="fa-solid fa-play icon_play-tracks"></i>
-                        <i class="fas fa-pause icon_pause-tracks"></i>
-                        </div>
-                        <div class="img_title_sing">
-                            <img src="${item.thumbnailM}"
-                                alt="">
-                        </div>
-                        <div class="list__sing-singgle">
-                            <p class="name_sing">${item.title}</p>
-                            <p class="name_single">${item.artistsNames}</p>
-                        </div>
+        if (_this.message === "Success") {
+            mainInforTracks.style.display = "block";
+            $('.content').style.display = "block";
+            allTracks.style.display = "block";
+            const htmlsInforPlaylistHeader = `
+                <div class="playlist__header">
+                    <div class="playlist_img">
+                        <img src="${PlaylistForU[0].banner}"
+                            alt="">
+                    </div>
+                    <div class="categories_descr">
+                        <p class="name_playlist">${_this.allTracksPlaylist.textType}</p>
+                        <h1 class="playlist__title-header">${_this.allTracksPlaylist.title}</h1>
+                        <p class="playlist_descr"> ${_this.allTracksPlaylist.description}</p>
                     </div>
                 </div>
-                <div class="list_album">
-                    <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
-                </div>
-                <div class="list_clock">
-                    <div class="icon_like-mobile">
-                        <i class="fa-regular fa-heart icon_like-mobile"></i>
+                `
+            headerInfor.innerHTML = htmlsInforPlaylistHeader;
+
+            // render tracks
+            const htmlsAllTracks = _this.allTracksPlaylist.song.items.map((item, index) => {
+                // // total time music
+                let time = Math.floor(item.duration)
+                let totalHours = parseInt(time / 3600);
+                let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
+                let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
+                let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
+
+                return `
+                <div class="content__sing-wrap content-wrap" data-Index=${index}>
+                    <div class="descr_sing-single">
+                        <div class="list__title_sing">
+                            <div class="order_number">${index + 1}</div>
+                            <div class="play_track-play-main">
+                            <i class="fa-solid fa-play icon_play-tracks"></i>
+                            <i class="fas fa-pause icon_pause-tracks"></i>
+                            </div>
+                            <div class="img_title_sing">
+                                <img src="${item.thumbnailM}"
+                                    alt="">
+                            </div>
+                            <div class="list__sing-singgle">
+                                <p class="name_sing">${item.title}</p>
+                                <p class="name_single">${item.artistsNames}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="time-clock">${totalNumberOftotalSeconds}</div>
-                    <i class="fa-solid fa-ellipsis"></i>
+                    <div class="list_album">
+                        <div class="name_album">${item?.album ? item.album.title : "Album chưa được cập nhật..."}</div>
+                    </div>
+                    <div class="list_clock">
+                        <div class="icon_like-mobile">
+                            <i class="fa-regular fa-heart icon_like-mobile"></i>
+                        </div>
+                        <div class="time-clock">${totalNumberOftotalSeconds}</div>
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </div>
                 </div>
-            </div>
-            `
-        })
-        allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
+                `
+            })
+            allTracksPlaylist.innerHTML = htmlsAllTracks.join('');
+            $('.icon__home-main').onclick = function () {
+                mainContent.style.display = "block";
+                mainInforTracks.style.display = "none";
+                $('.content').style.display = "block";
+            }
+        } else {
+            $('.img_not-function').style.display = "flex";
+            $('.img_not-function').innerHTML = ` <img src="./assets/workTime.svg" class="img_working" alt=""> `;
+            $('.icon__home-main').onclick = function () {
+                $('.img_not-function').style.display = "none";
+                mainContent.style.display = "block";
+                mainInforTracks.style.display = "none";
+                $('.content').style.display = "block";
+                $('.container__maincontent').style.display = "block";
+            }
+        }
 
         // play tracks when click
         $$('.content__sing-wrap').forEach((element, index) => {
@@ -143,7 +167,6 @@ const TrackPlaylist = {
                         TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack, status: "pause" });
                     }
                 }
-
             }
 
         })
@@ -190,7 +213,7 @@ const TrackPlaylist = {
         let _this = this;
         let PlaylistTab1 = props.playlistMusicTab1.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab1[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistTab1[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -347,7 +370,7 @@ const TrackPlaylist = {
         let _this = this;
         let PlaylistTab2 = props.playlistMusicTab2.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab2[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistTab2[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -504,7 +527,7 @@ const TrackPlaylist = {
         let _this = this;
         let PlaylistTab3 = props.playlistMusicTab3.items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistTab3[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistTab3[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -661,7 +684,7 @@ const TrackPlaylist = {
         let _this = this;
         let PlaylistTop = props.playlistMusicTop[0].items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistTop[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistTop[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -818,7 +841,7 @@ const TrackPlaylist = {
         let _this = this;
         let PlaylistHot = props.playlistMusicHot[0].items.filter((item) => item.title === props.titlePlaylist)
         // get alltracksplaylist
-        await fetch(END_POINT + `detailplaylist?id=${PlaylistHot[0].encodeId}`)
+        await fetch(END_POINT + `/api/detailplaylist?id=${PlaylistHot[0].encodeId}`)
             .then(response => response.json())
             .then(data => {
                 _this.allTracksPlaylist = data.data;
@@ -988,11 +1011,6 @@ const TrackPlaylist = {
             playBtn.classList.add('playing');
             $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_pause-tracks').style.display = "block";
             $(`.content__sing-wrap[data-Index="${_this.currentIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-            // newly lunched
-            // let hello = listNewlyTracks.querySelector(`.content_music-new="${_this.currentIndex}"]`)
-
-
-
         };
 
         // pause song
@@ -1089,13 +1107,6 @@ const TrackPlaylist = {
 
     },
     loadCurrentSong: async function (prop) {
-        // if (prop?.type === "newly-play" || prop?.type === "tracks-play") {
-        //     this.dataTrack = prop.dataTrack;
-        // } else {
-        //     this.dataTrack = this.allTracksPlaylist.song.items[this.currentIndex];
-        // }
-
-
         const desTrackPlay = `
         <div class="desc_song-play">
             <p class="title_song-play">${prop?.type ? prop.dataTrack.title : this.allTracksPlaylist.song.items[this.currentIndex].title}</p>
@@ -1132,7 +1143,7 @@ const TrackPlaylist = {
         });
 
         // get song
-        await fetch(END_POINT + `/song?id=${prop?.type ? prop.dataTrack.encodeId : this.allTracksPlaylist.song.items[this.currentIndex].encodeId}`)
+        await fetch(END_POINT + `/api//song?id=${prop?.type ? prop.dataTrack.encodeId : this.allTracksPlaylist.song.items[this.currentIndex].encodeId}`)
             .then(respone => respone.json())
             .then(data => this.track = data["data"]["128"])
         audio.src = this.track;

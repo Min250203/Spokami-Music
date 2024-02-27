@@ -1,4 +1,3 @@
-// import { Buffer } from "buffer";
 import SearchMusic from "./searchMusic.js";
 import TrackPlaylist from "./trackPlaylist.js";
 
@@ -32,6 +31,8 @@ const homeMainPage = $('.home_');
 const searchMainPage = $('.search_');
 const libraMainPage = $('.libra_');
 const accountMainPage = $('.account_');
+
+const END_POINT = window.env.API_URL;
 
 const HomePageMusic = {
     contentSearch: '',
@@ -78,9 +79,10 @@ const HomePageMusic = {
 
         let _this = this;
         // data categories
-        await fetch('http://localhost:3000/api/home?page=1')
+        await fetch(END_POINT +`/api/home?page=1`)
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 _this.playlistMusicForU = data.data.items.filter((item) => item.sectionId == "hSlider");
                 _this.playlistMusicNewlyLunched = data.data.items.filter((item) => item.sectionType == "new-release");
                 _this.playlistMusicTab1 = data.data.items[3];
@@ -485,9 +487,10 @@ const HomePageMusic = {
                 let playlistMusicForU = _this.playlistMusicForU;
                 TrackPlaylist.handleRenderTracksForU({ bannerForU, playlistMusicForU, titlePlaylist });
                 mainContent.style.display = "none";
-                allTracks.style.display = "block";
+                // allTracks.style.display = "block";
                 albumRelateSearch.style.display = "none";
-                mainInforTracks.style.display = "block";
+                $('.content').style.display = "none";
+                // mainInforTracks.style.display = "block";
                 $('.list_Tracks-single').style.display = "none";
                 $('.list_Tracks-single').style.display = "none";
 

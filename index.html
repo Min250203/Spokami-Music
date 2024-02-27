@@ -9,30 +9,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="./env.js"></script>
+    <link rel="stylesheet" href="./assets/workTime.svg">
 </head>
 
 <body>
     <div class="container__mainPage-music">
         <div class="nav_main-music">
             <div class="home_page-music">
-                <i class="icon__home-main fa-solid fa-house"></i>
+                <div class="name_for-app icon__home-main">SPACE music</div>
             </div>
-            <div class="name_for-app">SPOKAMI</div>
-            <div class="tool_account-music">
-                <button class="btn-login">LOGIN</button>
-                <button class="btn-sub">SUBSCRIBE</button>
-                <!-- <i class="fa-regular fa-user icon__headnav"></i> -->
-            </div>
-        </div>
-        <div class="nav_tool-music">
-
-            <!-- <div class="nav__tool"> -->
+            <!-- <img src="./assets/image/Work time-amico.png" alt=""> -->
             <label for="" class="nav__search">
                 <i class="icon__searchnav fa-solid fa-magnifying-glass"></i>
                 <input class="nav__search-input" placeholder="bạn muốn nghe gì?" type="input"></input>
                 <i class="fa-solid fa-xmark icon__closeSearch"></i>
             </label>
-            <!-- </div> -->
+        </div>
+        <div class="nav_tool-music">
             <div class="categories">THỂ LOẠI</div>
             <div class="categories">QUỐC GIA</div>
             <div class="categories">BXH MỚI NHẤT</div>
@@ -271,6 +265,7 @@
                     <!-- end all tracks playlist -->
                 </div>
 
+                <div class="img_not-function"></div>
             </div>
 
         </div>
@@ -359,7 +354,6 @@
     document.querySelector('.btn-login').onclick = function () {
         container.style.display = "none";
         $('#Login').style.display = "flex";
-        console.log(123)
     }
 
     // translateReturn
