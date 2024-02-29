@@ -10,6 +10,8 @@ const listNewlyTracks = $('.list_musicNewly');
 const mainContent = $('.desc__contentmain');
 const mainInforTracks = $('.all__tracks-main');
 const allTracks = $('.active-show');
+const btnRandom = $('.btn-random');
+const btnRepeat = $('.btn-repeat');
 
 const END_POINT = window.env.API_URL;
 const TrackPlaylist = {
@@ -23,6 +25,8 @@ const TrackPlaylist = {
     track: '',
     dataAllTracks: [],
     oldIndex: 0,
+    isRandom: false,
+    isRepeat: false,
     message: '',
     handleRenderTracksForU: async function (props) {
         let _this = this;
@@ -1074,18 +1078,15 @@ const TrackPlaylist = {
         }
 
         // // khi random bài hát
-        // btnRandom.onclick = function () {
-        //     if (!_this.isRandom) {
-        //         _this.isRandom = true;
-        //         btnRandom.classList.add("active");
-        //     } else {
-        //         _this.isRandom = false;
-        //         btnRandom.classList.remove("active");
-        //     }
-
-        //     // _this.isRandom = !_this.isRandom;
-        //     // btnRandom.classList.toggle('active', _this.isRandom);
-        // }
+        btnRandom.onclick = function () {
+            if (!_this.isRandom) {
+                _this.isRandom = true;
+                btnRandom.classList.add("btnActive");
+            } else {
+                _this.isRandom = false;
+                btnRandom.classList.remove("btnActive");
+            }
+        }
 
         // // Xử lý next song khi ended bài hát
         audio.onended = function () {
@@ -1100,10 +1101,10 @@ const TrackPlaylist = {
 
 
         // // Xử lý phats lại 1 bài hát
-        // btnRepeat.onclick = function () {
-        //     _this.isRepeat = !_this.isRepeat;
-        //     btnRepeat.classList.toggle('active', _this.isRepeat);
-        // }
+        btnRepeat.onclick = function () {
+            _this.isRepeat = !_this.isRepeat;
+            btnRepeat.classList.toggle('btnActive', _this.isRepeat);
+        }
 
     },
     loadCurrentSong: async function (prop) {
@@ -1175,15 +1176,16 @@ const TrackPlaylist = {
         }
         this.loadCurrentSong();
     },
-    // randomSong: function () {
-    //     let newIndex
-    //     do {
-    //         newIndex = Math.floor(Math.random() * this.songs.length);
-    //     }
-    //     while (newIndex === this.currentIndex);
-    //     this.currentIndex = newIndex;
-    //     this.loadCurrentSong();
-    // },
+    randomSong: function () {
+        this.dataAllTracks = this.allTracksPlaylist.song.items;
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * this.dataAllTracks.length);
+        }
+        while (newIndex === this.currentIndex);
+        this.currentIndex = newIndex;
+        this.loadCurrentSong();
+    },
 };
 
 export default TrackPlaylist;

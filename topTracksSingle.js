@@ -4,7 +4,12 @@ import TrackPlaylist from "./trackPlaylist.js";
 const headerInfor = $('.playlist_header-infor');
 const allTracks = $('.active-show');
 const tracksSingle = $('.all_tracks-single');
+const artistRelateWrap = $('.hot_music-inforSingle');
 const tracksFanLikeWrap = $('.album_fan-wrap');
+const contentSearch = $('.content_search');
+const iconHeadLeft = $('.left');
+
+const END_POINT = window.env.API_URL;
 
 
 const TopTracksSingle = {
@@ -16,6 +21,7 @@ const TopTracksSingle = {
     dataHotAppearMusic: {},
     dataPlaylist: {},
     oldIndex: 0,
+    tracksHotAppearMusic: [],
     handleTracks: async function (props) {
         console.log("props", props)
         if (props.type === "infor-Single") {
@@ -66,7 +72,7 @@ const TopTracksSingle = {
                         </div>
                     </div>
                     <div class="list_album">
-                        <div class="name_album">${item.album.title}</div>
+                        <div class="name_album">${item?.album?.title}</div>
                     </div>
                     <div class="list_clock">
                         <i class="fa-regular fa-heart"></i>
@@ -77,6 +83,7 @@ const TopTracksSingle = {
                 `
             })
             tracksSingle.innerHTML = htmlsTracks.join("");
+            console.log(tracksSingle)
 
             // click top tracks
             $$('.content_tracks-single').forEach((element, index) => {
@@ -195,6 +202,63 @@ const TopTracksSingle = {
             //     }
             // })
 
+            const htmlsHotAppearForMusic = props.dataHotAppearMusic.map((item, index) => {
+                return ` 
+                        <div class="card_box-sing playlist__search hot_music-appear slide_banner" data-Index=${index}>
+                            <img class="img_singgle img_slide-banner"src="${item.thumbnailM}" alt="">
+                        </div>
+                    </div>
+                        `
+            })
+            artistRelateWrap.innerHTML = htmlsHotAppearForMusic.join("");
+            console.log(artistRelateWrap)
+
+            // click hot appear for music
+            $$('.artist_box-wrap').forEach((element, index) => {
+                element.onclick = async function (e) {
+                    const tracksHotAppear = e.target.closest('.hot_music-appear');
+                    let titlePlaylist = tracksHotAppear.querySelector('.img_slide-banner').src;
+                    let dataHotAppearForMusic = props.dataHotAppearMusic
+                    // _this.handleEventInforSearch({ dataHotAppearForMusic, type: "hotMusicForSing", titlePlaylist });
+
+                    let idDetailPlaylist = props.dataHotAppearMusic.filter(item => item.thumbnailM === titlePlaylist)
+                    await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
+                        .then(respone => respone.json())
+                        .then(data => {
+                            _this.tracksHotAppearMusic = data.data;
+                        })
+                    iconHeadLeft.style.color = "#fff";
+                    _this.status = 1;
+                    // icon left
+                    iconHeadLeft.onclick = function () {
+                        if (_this.status === 1) {
+                            iconHeadLeft.style.color = "#fff";
+                            contentSearch.style.display = "block";
+                            allTracks.style.display = "none";
+                            _this.status = 0;
+                        } else {
+                            iconHeadLeft.style.color = "#9c9c9c";
+                            mainContent.style.display = "block";
+                            $('.content_search').style.display = "none";
+                            mainInforTracks.style.display = "none";
+                        }
+                    }
+                    let type = "hotAppear-Single";
+                    let dataHotAppearMusic = _this.tracksHotAppearMusic;
+                    // let dataInforSingle = _this.dataValueSearch.artists[0];
+                    contentSearch.style.display = "none";
+                    allTracks.style.display = "block";
+                    $('.list__Playlist').style.display = "none";
+                    $('.list_Tracks-single').style.display = "flex";
+                    $('.album_relate-active').style.display = "block";
+                    $('.fan_like-tracks').style.display = "none";
+                    $('.album_relate-active').style.display = "none";
+                    TopTracksSingle.handleTracks({ dataHotAppearMusic, type });
+
+
+                }
+            })
+
         }
         else if (props.type === "appear-Single") {
             this.dataAppearSingle = props.dataAppearSingle;
@@ -291,7 +355,7 @@ const TopTracksSingle = {
 
                         // change icon play
                         $('.play_track-play-main').classList.add('playing');
-                       TrackPlaylist.loadCurrentSong({ type: "infor-single-track", dataTrack });
+                        TrackPlaylist.loadCurrentSong({ type: "infor-single-track", dataTrack });
                     }
                     else {
                         // click to pause
@@ -323,12 +387,12 @@ const TopTracksSingle = {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "none";
                         iconPause.style.display = "block";
-                    orderNumber.style.display = "none";
+                        orderNumber.style.display = "none";
                     } else {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "block";
-                    orderNumber.style.display = "none";
-                    iconPause.style.display = "none";
+                        orderNumber.style.display = "none";
+                        iconPause.style.display = "none";
                     }
                 }
 
@@ -444,7 +508,7 @@ const TopTracksSingle = {
 
                         // change icon play
                         $('.play_track-play-main').classList.add('playing');
-                       TrackPlaylist.loadCurrentSong({ type: "infor-single-track", dataTrack });
+                        TrackPlaylist.loadCurrentSong({ type: "infor-single-track", dataTrack });
                     }
                     else {
                         // click to pause
@@ -476,12 +540,12 @@ const TopTracksSingle = {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "none";
                         iconPause.style.display = "block";
-                    orderNumber.style.display = "none";
+                        orderNumber.style.display = "none";
                     } else {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "block";
-                    orderNumber.style.display = "none";
-                    iconPause.style.display = "none";
+                        orderNumber.style.display = "none";
+                        iconPause.style.display = "none";
                     }
                 }
 
@@ -598,7 +662,7 @@ const TopTracksSingle = {
 
                         // change icon play
                         $('.play_track-play-main').classList.add('playing');
-                       TrackPlaylist.loadCurrentSong({ type: "playlist-track", dataTrack });
+                        TrackPlaylist.loadCurrentSong({ type: "playlist-track", dataTrack });
                     }
                     else {
                         // click to pause
@@ -630,12 +694,12 @@ const TopTracksSingle = {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "none";
                         iconPause.style.display = "block";
-                    orderNumber.style.display = "none";
+                        orderNumber.style.display = "none";
                     } else {
                         toolplay.style.display = "block";
                         iconPlay.style.display = "block";
-                    orderNumber.style.display = "none";
-                    iconPause.style.display = "none";
+                        orderNumber.style.display = "none";
+                        iconPause.style.display = "none";
                     }
                 }
 
@@ -735,9 +799,9 @@ const TopTracksSingle = {
 
             tracksFanLikeWrap.innerHTML = htmlTracksFanLike.join("");
         }
-    }, 
+    },
     // handleTracksFanLike: async function() {
-        
+
     // }
 }
 

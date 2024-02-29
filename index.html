@@ -29,10 +29,10 @@
         <div class="nav_tool-music">
             <div class="categories">THỂ LOẠI</div>
             <div class="categories">QUỐC GIA</div>
-            <div class="categories">BXH MỚI NHẤT</div>
+            <div class="categories cate_bxh-new">BXH MỚI NHẤT</div>
             <div class="categories">NGHE GẦN ĐÂY</div>
             <div class="categories">YÊU THÍCH</div>
-            <i class="fa-regular fa-bell icon__headnav"></i>
+            <!-- <i class="fa-regular fa-bell icon__headnav"></i> -->
 
         </div>
         <!-- mainPageMusic -->
@@ -151,17 +151,17 @@
                                     <div class="list_musicNewly"> </div>
                                 </div>
                             </div>
-                            <!-- playlist mood -->
+                            <!-- playlist tab1 -->
                             <div class="head__content-title head_title-musicMood">
                                 <div class="head__title-tab1"></div>
                                 <div class="list__musicTab1"> </div>
                             </div>
-                            <!-- playlist health -->
+                            <!-- playlist tab12 -->
                             <div class="head__content-title head_title-musicMood">
                                 <div class="head__title-tab2"></div>
                                 <div class="list__musicTab2"></div>
                             </div>
-                            <!-- playlist accoustic -->
+                            <!-- playlist tab3 -->
                             <div class="head__content-title head_title-musicMood">
                                 <div class="head__title-tab3">
                                 </div>
@@ -258,11 +258,24 @@
                                     <h2>Album</h2>
                                     <div class="album_relate-wrap content__infor-albums"></div>
                                 </div>
+                                <div class="result-artist">
+                                    <h2>Được xuất hiện trong</h2>
+                                    <div class="artist_box-wrap hot_music-inforSingle"> </div>
+                                </div>
 
                             </div>
                         </div>
                     </div>
                     <!-- end all tracks playlist -->
+                    <!-- bxh new -->
+                    <div class="content_bxh-new">
+                        <div class="head_title-bxh">
+                            <h1 class="title_bxh">BXH MỚI NHẤT</h1>
+                            <i class="fa-solid fa-play icon_play-bxh"></i>
+
+                        </div>
+                        <div class="content_sing-bxh"></div>
+                    </div>
                 </div>
 
                 <div class="img_not-function"></div>
@@ -327,22 +340,6 @@
             <audio id="audio">
                 <source class="src-audio" src="" type="audio/mpeg">
             </audio>
-        </div>
-    </div>
-    <!-- pageLogin -->
-    <div id="Login">
-        <i class="fa-solid fa-arrow-left btn__exist"></i>
-        <div class="model-log">
-            <div class="content_log">
-                <h2 class="head_log">LOGIN</h2>
-                <input class="email" type="email" placeholder="EMAIL">
-                <input class="password" type="password" placeholder="PASSWORD">
-                <a class="direct__yourPass" href="">FORGOT YOUR PASSWORD</a>
-            </div>
-            <div class="submit__">
-                <button class="btn__log-loged">LOGIN</button>
-                <button class="btn__sing-singed">SING UP</button>
-            </div>
         </div>
     </div>
 </body>

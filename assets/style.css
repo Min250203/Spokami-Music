@@ -133,14 +133,16 @@ html {
 
 .img__played {
     display: none;
-    width: 51px;
-    height: 50px;
+    width: 56px;
+    height: 54px;
+    border-radius: 5px;
     background-color: #545454;
 }
 
 .img_song-play {
     width: 100%;
     object-fit: cover;
+    border-radius: 5px;
 }
 
 .desc_song-play {
@@ -161,6 +163,12 @@ html {
 .title_single-play {
     font-size: 13px;
     color: #ccc;
+}
+
+.title_bxh{
+    color: #fff;
+    font-size: 35px;
+    font-weight: 600;
 }
 
 .icon__slidenav {
@@ -269,7 +277,7 @@ html {
     display: flex;
     background-color: #000;
     position: fixed;
-    height: 65px;
+    height: 75px;
     bottom: 0;
     width: 100%;
 }
@@ -298,7 +306,7 @@ html {
 }
 
 .control {
-    padding-bottom: 10px;
+    padding-bottom: 5px;
     width: 40%;
     height: 100%;
     display: flex;
@@ -364,10 +372,18 @@ html {
     display: none;
 }
 
-/* .playing .icon_pause-tracks{
-    display: inline-block;
-} */
+.icon_pause-tracks{
+    cursor: pointer;
+}
 
+.btn-random.btnActive{
+    color: #1ed760;
+}
+
+.btn-repeat.btnActive{
+    color: #1ed760;
+
+}
 
 
 .btn-toggle-play {
@@ -489,12 +505,13 @@ html {
     border-radius: 5px;
     gap: 10px;
     background-color: #242424;
+    outline: none;
 }
 
-.nav__search:focus-within {
+/* .nav__search:focus-within {
     outline: auto;
-    /* outline-style: 1px solid #000; */
-}
+    outline-style: 1px solid #000;
+} */
 
 
 .nav__search-input {
@@ -516,6 +533,7 @@ html {
 
 .icon__closeSearch {
     cursor: pointer;
+    display: none;
 }
 
 .content_search {
@@ -920,11 +938,28 @@ html {
     text-align: center;
 }
 
+.icon_play-bxh{
+    padding: 12px 14px;
+    font-size: 17px;
+    color: #000;
+    background-color: #1ed760;
+    border-radius: 26px;
+    text-align: center;
+}
+
+.head_title-bxh{
+    display: flex;
+    padding: 40px 0 40px;
+    align-items: center;
+    gap: 10px;
+}
+
 .icon_play-tracks {
     font-size: 14px;
-    color: #000;
+    color: #fff;
     align-items: center;
     text-align: center;
+    cursor: pointer;
 }
 
 
@@ -1586,7 +1621,7 @@ html {
     display: flex;
     background-color: #000;
     color: #fff;
-    justify-content: space-between;
+    justify-content: space-evenly;
     height: 40px;
     border-top: 1px solid #fff;
     padding: 10px 20px;
@@ -1598,6 +1633,12 @@ html {
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
+    color: #a7a7a7;
+}
+
+.categories:hover{
+    border-bottom: 2px solid #fff;
+    color: #fff;
 }
 
 .list_musicNewly {
@@ -1626,4 +1667,13 @@ html {
 
 .playlist__sings-wrap {
     margin-bottom: 50px;
+}
+
+.content_bxh-new{
+    display: none;
+    margin-bottom: 50px;
+}
+
+.result-artist{
+    color: #fff;
 }

@@ -93,7 +93,6 @@ const SearchMusic = {
                         const tracksPlaylist = e.target.closest('.card_box-sing');
                         let titlePlaylist = tracksPlaylist.querySelector('.title_singgle').innerText;
                         let dataPlaylist = _this.dataValueSearch.playlists
-                        console.log(dataPlaylist)
                         _this.handleEventInforSearch({ dataPlaylist, type: "tracksPlaylist", titlePlaylist });
 
                     }
@@ -232,8 +231,6 @@ const SearchMusic = {
                 await fetch(END_POINT + `/api//artist?name=${_this.dataValueSearch.artists[0].alias}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
-                        console.log(_this.dataValueSearch)
                         _this.albums = data.data.sections;
 
                     })
@@ -414,8 +411,6 @@ const SearchMusic = {
                 })
 
                 // hot appear for music
-                console.log("xuất hiện trong", _this.albums)
-                console.log("xuất hiện trong", _this.albums[5].items)
                 const htmlsHotAppearForMusic = _this.albums[5].items.map((item, index) => {
                     return ` 
                             <div class="card_box-sing playlist__search hot_music-appear slide_banner" data-Index=${index}>
@@ -432,7 +427,6 @@ const SearchMusic = {
                         const tracksHotAppear = e.target.closest('.hot_music-appear');
                         let titlePlaylist = tracksHotAppear.querySelector('.img_slide-banner').src;
                         let dataHotAppearForMusic = _this.albums[5].items
-                        console.log(dataHotAppearForMusic)
                         _this.handleEventInforSearch({ dataHotAppearForMusic, type: "hotMusicForSing", titlePlaylist });
 
                     }
@@ -474,7 +468,6 @@ const SearchMusic = {
                         const tracksPlaylist = e.target.closest('.card_box-sing');
                         let titlePlaylist = tracksPlaylist.querySelector('.title_singgle').innerText;
                         let dataPlaylist = _this.dataValueSearch.playlists
-                        console.log(dataPlaylist)
                         _this.handleEventInforSearch({ dataPlaylist, type: "tracksPlaylist", titlePlaylist });
 
                     }
@@ -543,28 +536,30 @@ const SearchMusic = {
                 _this.status = 1;
                 // icon left
                 iconHeadLeft.onclick = function () {
-                    if(_this.status ===1){
+                    if (_this.status === 1) {
                         iconHeadLeft.style.color = "#fff";
                         contentSearch.style.display = "block";
                         allTracks.style.display = "none";
-                        _this.status =0;
-                    }else{
+                        $('.list__Playlist').style.display = "block"
+                        _this.status = 0;
+                    } else {
                         iconHeadLeft.style.color = "#9c9c9c";
                         mainContent.style.display = "block";
                         $('.content_search').style.display = "none";
-                        mainInforTracks.style.display = "none";
+                        // mainInforTracks.style.display = "none";
                     }
                 }
                 let type = "infor-Single";
                 let dataInforSingle = _this.dataValueSearch.artists[0];
                 let dataFanSoLike = _this.albums.filter((item) => item.sectionId === "aReArtist");
+                let dataHotAppearMusic = _this.albums[5].items;
                 let dataSong = props.dataSong
                 contentSearch.style.display = "none";
                 allTracks.style.display = "block";
                 $('.list__Playlist').style.display = "none";
                 $('.list_Tracks-single').style.display = "flex";
                 $('.album_relate-active').style.display = "block";
-                TopTracksSingle.handleTracks({ dataSong, type, dataInforSingle, dataFanSoLike })
+                TopTracksSingle.handleTracks({ dataSong, type, dataInforSingle, dataFanSoLike,dataHotAppearMusic })
             }
         }
         else if (props.type === "appearSingle") {
@@ -578,12 +573,12 @@ const SearchMusic = {
             _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                if(_this.status ===1){
+                if (_this.status === 1) {
                     iconHeadLeft.style.color = "#fff";
                     contentSearch.style.display = "block";
                     allTracks.style.display = "none";
-                    _this.status =0;
-                }else{
+                    _this.status = 0;
+                } else {
                     iconHeadLeft.style.color = "#9c9c9c";
                     mainContent.style.display = "block";
                     $('.content_search').style.display = "none";
@@ -605,23 +600,21 @@ const SearchMusic = {
         }
         else if (props.type === "hotMusicForSing") {
             let idDetailPlaylist = _this.albums[5].items.filter(item => item.thumbnailM === props.titlePlaylist)
-            console.log(idDetailPlaylist)
             await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
                 .then(respone => respone.json())
                 .then(data => {
-                    console.log("data", data)
                     _this.tracksHotAppearMusic = data.data;
                 })
             iconHeadLeft.style.color = "#fff";
             _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                if(_this.status ===1){
+                if (_this.status === 1) {
                     iconHeadLeft.style.color = "#fff";
                     contentSearch.style.display = "block";
                     allTracks.style.display = "none";
-                    _this.status =0;
-                }else{
+                    _this.status = 0;
+                } else {
                     iconHeadLeft.style.color = "#9c9c9c";
                     mainContent.style.display = "block";
                     $('.content_search').style.display = "none";
@@ -643,23 +636,21 @@ const SearchMusic = {
         }
         else if (props.type === "tracksPlaylist") {
             let idDetailPlaylist = _this.dataValueSearch.playlists.filter(item => item.title === props.titlePlaylist)
-            console.log(idDetailPlaylist)
             await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
                 .then(respone => respone.json())
                 .then(data => {
-                    console.log("data", data)
                     _this.tracksPlaylist = data.data;
                 })
             iconHeadLeft.style.color = "#fff";
             _this.status = 1;
             // icon left
             iconHeadLeft.onclick = function () {
-                if(_this.status ===1){
+                if (_this.status === 1) {
                     iconHeadLeft.style.color = "#fff";
                     contentSearch.style.display = "block";
                     allTracks.style.display = "none";
-                    _this.status =0;
-                }else{
+                    _this.status = 0;
+                } else {
                     iconHeadLeft.style.color = "#9c9c9c";
                     mainContent.style.display = "block";
                     $('.content_search').style.display = "none";
