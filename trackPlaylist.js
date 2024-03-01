@@ -11,6 +11,8 @@ const mainContent = $('.desc__contentmain');
 const mainInforTracks = $('.all__tracks-main');
 const allTracks = $('.active-show');
 const btnRandom = $('.btn-random');
+const allMainContent = $('.container__maincontent');
+const allMainInforSingle = $('.conatiner__infor_tracks-playing');
 const btnRepeat = $('.btn-repeat');
 
 const END_POINT = window.env.API_URL;
@@ -22,6 +24,7 @@ const TrackPlaylist = {
     isPlaying: false,
     isRandom: false,
     isRepeat: false,
+    fullLyric: {},
     track: '',
     dataAllTracks: [],
     oldIndex: 0,
@@ -39,6 +42,36 @@ const TrackPlaylist = {
                 _this.message = data.msg;
             })
             .catch(error => console.error(error))
+
+        // await fetch(END_POINT + `/api/lyric?id=Z69C9IB7`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         const elLyric = document.querySelector(".render-lyric");
+        //         const sentences = data.data.sentences;
+
+        //         sentences.map((sentence) => {
+        //             const words = sentence.words;
+        //             let key;
+        //             let lyric = "";
+
+        //             words.map((word, index) => {
+        //                 if(index === 0) {
+        //                     key = word.startTime;
+        //                 }
+        //                 lyric += `${word.data} `
+        //             })
+
+        //             _this.fullLyric[key] = lyric;
+        //         })
+
+        //         const htmlLyric = Object.values(_this.fullLyric).map((item) => (
+        //             `<p>${item}</p>`
+        //         ))
+
+        //         elLyric.innerHTML = htmlLyric.join("")
+        //     })
+        //     .catch(error => console.error(error))
+
 
         //   inforHeader playlist
         if (_this.message === "Success") {
@@ -68,7 +101,6 @@ const TrackPlaylist = {
                 let totalMinutes = parseInt((time - (totalHours * 3600)) / 60);
                 let totalSeconds = Math.floor((time - ((totalHours * 3600) + (totalMinutes * 60))));
                 let totalNumberOftotalSeconds = (totalMinutes < 10 ? "0" + totalMinutes : totalMinutes) + ":" + (totalSeconds < 10 ? "0" + totalSeconds : totalSeconds);
-
                 return `
                 <div class="content__sing-wrap content-wrap" data-Index=${index}>
                     <div class="descr_sing-single">
@@ -110,6 +142,7 @@ const TrackPlaylist = {
         } else {
             $('.img_not-function').style.display = "flex";
             $('.img_not-function').innerHTML = ` <img src="./assets/workTime.svg" class="img_working" alt=""> `;
+            $('.none_of_none-img').style.display = "block";
             $('.icon__home-main').onclick = function () {
                 $('.img_not-function').style.display = "none";
                 mainContent.style.display = "block";
@@ -147,6 +180,15 @@ const TrackPlaylist = {
                     $('.name__music').style.display = "block";
                     $('.img__played').style.display = "block";
 
+                    // show descr single when playing
+                    // css for main content
+                    allMainInforSingle.style.display = "block";
+                    allMainContent.style.width = "75%";
+                    allMainContent.style.margin = "0";
+                    $('.icon__close-tab_infor').style.display = "block";
+
+                    $('.infor__playlist').style.display = "flex";
+
                     // show icon
                     orderNumber.style.display = "none";
                     toolplay.style.display = "block";
@@ -172,7 +214,6 @@ const TrackPlaylist = {
                     }
                 }
             }
-
         })
 
         // hover tracks when play
@@ -212,6 +253,15 @@ const TrackPlaylist = {
                 }
             }
         })
+
+        // click close tab infor tracks
+        $('.icon__close-tab_infor').onclick = function() {
+            $('.conatiner__infor_tracks-playing').style.display = "none";
+            allMainContent.style.width = "85%";
+            allMainContent.style.margin = "auto";
+
+
+        }
     },
     handleRenderTracksTab1: async function (props) {
         let _this = this;

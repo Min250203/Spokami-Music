@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./assets/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
         integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="./env.js"></script>
+    <link rel="stylesheet" href="./assets/style.css">
     <link rel="stylesheet" href="./assets/workTime.svg">
 </head>
 
@@ -19,20 +19,18 @@
             <div class="home_page-music">
                 <div class="name_for-app icon__home-main">SPACE music</div>
             </div>
-            <!-- <img src="./assets/image/Work time-amico.png" alt=""> -->
             <label for="" class="nav__search">
                 <i class="icon__searchnav fa-solid fa-magnifying-glass"></i>
                 <input class="nav__search-input" placeholder="bạn muốn nghe gì?" type="input"></input>
                 <i class="fa-solid fa-xmark icon__closeSearch"></i>
             </label>
         </div>
-        <div class="nav_tool-music">
+        <div class="categories_nav nav_tool-music">
             <div class="categories">THỂ LOẠI</div>
             <div class="categories">QUỐC GIA</div>
             <div class="categories cate_bxh-new">BXH MỚI NHẤT</div>
             <div class="categories">NGHE GẦN ĐÂY</div>
             <div class="categories">YÊU THÍCH</div>
-            <!-- <i class="fa-regular fa-bell icon__headnav"></i> -->
 
         </div>
         <!-- mainPageMusic -->
@@ -181,88 +179,89 @@
                             </div>
                         </div>
                         <!-- end home page -->
-                    </div>
-                    <!-- tracks when click album or tracks or single -->
-                    <div class="all__tracks-main active-show">
-                        <!-- showw icon left -->
-                        <div class="left_icon-mobile">
-                            <i class="fa-solid fa-angle-left icon__headnav left"></i>
-                        </div>
-                        <!-- start all tracks playlist -->
-                        <div class="children__content-playlist">
-                            <!-- header infor playlist -->
-                            <div class="playlist_header-infor"> </div>
-                            <div class="list__Playlist">
-                                <div class="icon_action">
+
+                        <!-- tracks when click album or tracks or single -->
+                        <div class="all__tracks-main active-show">
+                            <!-- showw icon left -->
+                            <div class="left_icon-mobile">
+                                <i class="fa-solid fa-angle-left icon__headnav left"></i>
+                            </div>
+                            <!-- start all tracks playlist -->
+                            <div class="children__content-playlist">
+                                <!-- header infor playlist -->
+                                <div class="playlist_header-infor"> </div>
+                                <div class="list__Playlist">
+                                    <div class="icon_action">
+                                        <div class="icon-action action-left">
+                                            <i class="fa-solid fa-play icon_play-option"></i>
+                                            <i class="fa-regular fa-heart icon-like-option"></i>
+                                            <i class="fa-solid fa-ellipsis icon-options"></i>
+                                        </div>
+                                        <div class="icon-action action-right">
+                                            <p>Danh sách</p>
+                                            <i class="fa-solid fa-list icon-list"></i>
+                                        </div>
+                                    </div>
+                                    <!-- icon mobile -->
+                                    <div class="icon_action-mobile">
+                                        <div class="icon-action action-left">
+                                            <i class="fa-solid fa-circle-plus"></i>
+                                            <i class="fa-solid fa-circle-down"></i>
+                                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                        </div>
+                                        <div class="icon-action action-right">
+                                            <i class="fa-solid fa-shuffle"></i>
+                                            <i class="fa-solid fa-play icon_play-option"></i>
+
+                                        </div>
+                                    </div>
+                                    <!-- start tracks -->
+                                    <div class="playlist__sings-wrap playlist-wrap">
+                                        <div class="title_sing-wrap ">
+                                            <div class="title_sing"># Tiêu đề</div>
+                                            <div class="title_album">Album</div>
+                                            <!-- <div class="title_date">Ngày thêm</div> -->
+                                            <i class="fa-regular fa-clock icon_clock"></i>
+                                        </div>
+                                        <div class="title_sing-search">
+                                            <div class="title_sing"># Tiêu đề</div>
+                                            <i class="fa-regular fa-clock icon_clock"></i>
+                                        </div>
+                                        <span class="line_title"></span>
+                                        <div class="all_tracks"></div>
+                                    </div>
+                                    <div class="head__content-title relate_albums-search">
+                                        <div class="head__title-relate"></div>
+                                        <div class="list_albums-relate content__infor-albums"></div>
+                                    </div>
+                                    <!-- end tracks -->
+                                </div>
+                                <!-- list Tracks of single -->
+                                <div class="list_Tracks-single">
                                     <div class="icon-action action-left">
                                         <i class="fa-solid fa-play icon_play-option"></i>
-                                        <i class="fa-regular fa-heart icon-like-option"></i>
+                                        <button class="follow_search btn_search">Theo dõi</button>
                                         <i class="fa-solid fa-ellipsis icon-options"></i>
                                     </div>
-                                    <div class="icon-action action-right">
-                                        <p>Danh sách</p>
-                                        <i class="fa-solid fa-list icon-list"></i>
+                                    <!-- start tracks -->
+                                    <div class="list_tracks-wrap">
+                                        <div class="title_tracks-single">Phổ biến</div>
+                                        <div class="all_tracks all_tracks-single"></div>
                                     </div>
-                                </div>
-                                <!-- icon mobile -->
-                                <div class="icon_action-mobile">
-                                    <div class="icon-action action-left">
-                                        <i class="fa-solid fa-circle-plus"></i>
-                                        <i class="fa-solid fa-circle-down"></i>
-                                        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                                    <div class="fan_like-tracks">
+                                        <div class="head_title-like">Fan cũng thích</div>
+                                        <div class="album_fan-wrap"></div>
                                     </div>
-                                    <div class="icon-action action-right">
-                                        <i class="fa-solid fa-shuffle"></i>
-                                        <i class="fa-solid fa-play icon_play-option"></i>
+                                    <div class="result-album album_relate-active">
+                                        <h2>Album</h2>
+                                        <div class="album_relate-wrap content__infor-albums"></div>
+                                    </div>
+                                    <div class="result-artist">
+                                        <h2>Được xuất hiện trong</h2>
+                                        <div class="artist_box-wrap hot_music-inforSingle"> </div>
+                                    </div>
 
-                                    </div>
                                 </div>
-                                <!-- start tracks -->
-                                <div class="playlist__sings-wrap playlist-wrap">
-                                    <div class="title_sing-wrap ">
-                                        <div class="title_sing"># Tiêu đề</div>
-                                        <div class="title_album">Album</div>
-                                        <!-- <div class="title_date">Ngày thêm</div> -->
-                                        <i class="fa-regular fa-clock icon_clock"></i>
-                                    </div>
-                                    <div class="title_sing-search">
-                                        <div class="title_sing"># Tiêu đề</div>
-                                        <i class="fa-regular fa-clock icon_clock"></i>
-                                    </div>
-                                    <span class="line_title"></span>
-                                    <div class="all_tracks"></div>
-                                </div>
-                                <div class="head__content-title relate_albums-search">
-                                    <div class="head__title-relate"></div>
-                                    <div class="list_albums-relate content__infor-albums"></div>
-                                </div>
-                                <!-- end tracks -->
-                            </div>
-                            <!-- list Tracks of single -->
-                            <div class="list_Tracks-single">
-                                <div class="icon-action action-left">
-                                    <i class="fa-solid fa-play icon_play-option"></i>
-                                    <button class="follow_search btn_search">Theo dõi</button>
-                                    <i class="fa-solid fa-ellipsis icon-options"></i>
-                                </div>
-                                <!-- start tracks -->
-                                <div class="list_tracks-wrap">
-                                    <div class="title_tracks-single">Phổ biến</div>
-                                    <div class="all_tracks all_tracks-single"></div>
-                                </div>
-                                <div class="fan_like-tracks">
-                                    <div class="head_title-like">Fan cũng thích</div>
-                                    <div class="album_fan-wrap"></div>
-                                </div>
-                                <div class="result-album album_relate-active">
-                                    <h2>Album</h2>
-                                    <div class="album_relate-wrap content__infor-albums"></div>
-                                </div>
-                                <div class="result-artist">
-                                    <h2>Được xuất hiện trong</h2>
-                                    <div class="artist_box-wrap hot_music-inforSingle"> </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
@@ -278,70 +277,153 @@
                     </div>
                 </div>
 
+                <!-- infor tracks when playing -->
+                <div class="conatiner__infor_tracks-playing">
+                    <div class="content__infor_tracks-playing">
+                        <div class="infor__tracks_single-playing">
+                            <div class="headtitle__tracks-playing">
+                                <p class="name__album_tracks-playing">Ai cũng phải bắt đầu từ đâu đó</p>
+                                <i class="fa-solid fa-xmark icon__close-tab_infor"></i>
+                            </div>
+
+                            <div class="img__album_tracks-playing">
+                                <img class="img__album-playing"
+                                    src="https://ss-images.saostar.vn/wwebp700/2023/10/19/pc/1697678293012/vgdor1ne7g1-k71nvl5r452-lph9phhhn33.jpg"
+                                    alt="">
+                            </div>
+                            <div class="tool__tracks-playing">
+                                <div class="title__tracks-playing">
+                                    <p class="name__sing_tracks-playing">Cho em an toàn</p>
+                                    <p class="name__artist-tracks-playing">Hiếu thứ 2</p>
+                                </div>
+                                <!-- <div class="icon__tracks-playing">
+                                    <i>icon 1</i>
+                                    <i>icon 2</i>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div class="infor__single-playing">
+                            <div class="infor__artist-playing">
+                                <div class="description__artist-playing">Giới thiệu về nghệ sĩ</div>
+                                <div class="img__album_tracks-playing">
+                                    <img class="img__artist-playing"
+                                        src="https://ss-images.saostar.vn/wwebp700/2023/10/19/pc/1697678293012/vgdor1ne7g1-k71nvl5r452-lph9phhhn33.jpg"
+                                        alt="">
+                                </div>
+                                <div class="title__artist-playing">
+                                    <p class="name__artist-playing">Hiếu thứ 2</p>
+                                    <div class="btn__follow">
+                                        <button class="btn__follow_artist-playing">Theo dõi</button>
+                                    </div>
+                                </div>
+                                <div class="name__album_artist-playing">Tên album bài hát</div>
+                            </div>
+                        </div>
+                        <div class="infor__participant-playing">
+                            <div class="participant__for-playing">
+                                <div class="head__for_paticipant">
+                                    <div class="participant">Người tham gia thực hiện</div>
+                                    <div class="show__participant">hiện tất cả</div>
+                                </div>
+                                <div class="infor__artist-participant">
+                                    <div class="title__artist-paticipant">
+                                        <p class="name__artist-participant">Hiếu thứ 2</p>
+                                        <p class="descr__artist-participant">Nghệ sĩ chính</p>
+                                    </div>
+                                    <div class="btn__follow-paticipant">
+                                        <button class="btn__follow_participant-playing">Theo dõi</button>
+                                    </div>
+                                </div>
+                                <div class="infor__artist-participant">
+                                    <div class="title__artist-paticipant">
+                                        <p class="name__artist-participant">Hiếu thứ 2</p>
+                                        <p class="descr__artist-participant">Nghệ sĩ chính</p>
+                                    </div>
+                                    <div class="btn__follow-paticipant">
+                                        <button class="btn__follow_participant-playing">Theo dõi</button>
+                                    </div>
+                                </div>
+                                <div class="infor__artist-participant">
+                                    <div class="title__artist-paticipant">
+                                        <p class="name__artist-participant">Hiếu thứ 2</p>
+                                        <p class="descr__artist-participant">Nghệ sĩ chính</p>
+                                    </div>
+                                    <div class="btn__follow-paticipant">
+                                        <button class="btn__follow_participant-playing">Theo dõi</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="img_not-function"></div>
-            </div>
+                <div class="img_updating"></div>
+                <h1 class="none_of_none-img">Danh sách bài hát đang được cập nhật...</h1>
 
-        </div>
-    </div>
 
-    <!-- mobile -->
-    <div class="main__page-mobile">
-        <div class="main_funct">
-            <div class="home_ btn_icon-mobile">
-                <i class="fa-solid fa-house icon__mobile-nav"></i>
-                <p>Trang chủ</p>
-            </div>
-            <div class="search_ btn_icon-mobile">
-                <i class="fa-solid fa-magnifying-glass icon__mobile-nav"></i>
-                <p>Tìm kiếm</p>
-            </div>
-            <div class="libra_ btn_icon-mobile">
-                <i class="fa-solid fa-shop icon__mobile-nav"></i>
-                <p>Thư viện</p>
-            </div>
-            <div class="account_ btn_icon-mobile">
-                <i class="fa-regular fa-user icon__mobile-nav"></i>
-                <p>Tài khoản</p>
             </div>
         </div>
-    </div>
 
-    <!-- audio-control -->
-    <div class="container__audio">
-        <div class="infor__music">
-            <div class="img__played"></div>
-            <div class="name__music"></div>
-        </div>
-
-        <div class="control">
-            <div class="audio__icon">
-                <div class="btn btn-repeat">
-                    <i class="fas fa-redo"></i>
+        <!-- mobile -->
+        <div class="main__page-mobile">
+            <div class="main_funct">
+                <div class="home_ btn_icon-mobile">
+                    <i class="fa-solid fa-house icon__mobile-nav"></i>
+                    <p>Trang chủ</p>
                 </div>
-                <div class="btn btn-prev">
-                    <i class="fas fa-step-backward"></i>
+                <div class="search_ btn_icon-mobile">
+                    <i class="fa-solid fa-magnifying-glass icon__mobile-nav"></i>
+                    <p>Tìm kiếm</p>
                 </div>
-                <div class="btn btn-toggle-play">
-                    <i class="fas fa-pause icon-pause"></i>
-                    <i class="fas fa-play icon-play"></i>
+                <div class="libra_ btn_icon-mobile">
+                    <i class="fa-solid fa-shop icon__mobile-nav"></i>
+                    <p>Thư viện</p>
                 </div>
-                <div class="btn btn-next">
-                    <i class="fas fa-forward"></i>
-                </div>
-                <div class="btn btn-random">
-                    <i class="fas fa-random"></i>
+                <div class="account_ btn_icon-mobile">
+                    <i class="fa-regular fa-user icon__mobile-nav"></i>
+                    <p>Tài khoản</p>
                 </div>
             </div>
-            <div class="time_music">
-                <div class="current_time"></div>
-                <input type="range" id="progress" class="progress" value="0" step="1" min="0" max="100">
-                <div class="total_time"></div>
-            </div>
-            <audio id="audio">
-                <source class="src-audio" src="" type="audio/mpeg">
-            </audio>
         </div>
-    </div>
+
+        <!-- audio-control -->
+        <div class="container__audio">
+            <div class="infor__music">
+                <div class="img__played"></div>
+                <div class="name__music"></div>
+            </div>
+
+            <div class="control">
+                <div class="audio__icon">
+                    <div class="btn btn-repeat">
+                        <i class="fas fa-redo"></i>
+                    </div>
+                    <div class="btn btn-prev">
+                        <i class="fas fa-step-backward"></i>
+                    </div>
+                    <div class="btn btn-toggle-play">
+                        <i class="fas fa-pause icon-pause"></i>
+                        <i class="fas fa-play icon-play"></i>
+                    </div>
+                    <div class="btn btn-next">
+                        <i class="fas fa-forward"></i>
+                    </div>
+                    <div class="btn btn-random">
+                        <i class="fas fa-random"></i>
+                    </div>
+                </div>
+                <div class="time_music">
+                    <div class="current_time"></div>
+                    <input type="range" id="progress" class="progress" value="0" step="1" min="0" max="100">
+                    <div class="total_time"></div>
+                </div>
+                <audio id="audio">
+                    <source class="src-audio" src="" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
 </body>
 <script>
     const $ = document.querySelector.bind(document);

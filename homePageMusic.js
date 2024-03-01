@@ -32,6 +32,7 @@ const searchMainPage = $('.search_');
 const libraMainPage = $('.libra_');
 const accountMainPage = $('.account_');
 const tracksBXHSingle = $('.content_sing-bxh');
+const allMainContent = $('.container__maincontent');
 
 const END_POINT = window.env.API_URL;
 
@@ -89,8 +90,6 @@ const HomePageMusic = {
             $('.list__Playlist').style.display = "block";
             iconHeadLeft.style.color = "#fff";
 
-
-
             // icon
             iconHeadLeft.onclick = function () {
                 iconHeadLeft.style.color = "#9c9c9c";
@@ -111,7 +110,6 @@ const HomePageMusic = {
             await fetch(END_POINT + `/api/newreleasechart`)
                 .then(respone => respone.json())
                 .then(data => {
-                    console.log(data)
                     _this.singBXH = data.data.items;
                 })
 
@@ -157,13 +155,11 @@ const HomePageMusic = {
 
             // when click tracks
             $$('.content_tracks-single').forEach((element, index) => {
-                console.log("vô đây chưa")
                 let orderNumber = element.querySelector('.order_number');
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
                 element.onclick = function (e) {
-                    console.log("đây là lần đầu")
 
                     // click different song
                     const songIndex = e.target.closest('.content_tracks-single:not(.active_playing-track)');
@@ -259,7 +255,6 @@ const HomePageMusic = {
         await fetch(END_POINT + `/api/home?page=1`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 _this.playlistMusicForU = data.data.items.filter((item) => item.sectionId == "hSlider");
                 _this.playlistMusicNewlyLunched = data.data.items.filter((item) => item.sectionType == "new-release");
                 _this.playlistMusicTab1 = data.data.items[3];
@@ -346,13 +341,11 @@ const HomePageMusic = {
 
             // click
             $$('.content_music-new').forEach((element, index) => {
-                console.log("vô đây chưa")
                 let orderNumber = element.querySelector('.order_number');
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
                 element.onclick = function (e) {
-                    console.log("đây là lần đầu")
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
@@ -439,13 +432,11 @@ const HomePageMusic = {
 
             // click
             $$('.content_music-new').forEach((element, index) => {
-                console.log("vô đây chưa")
                 let orderNumber = element.querySelector('.order_number');
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
                 element.onclick = function (e) {
-                    console.log("đây là lần đầu")
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
@@ -532,13 +523,11 @@ const HomePageMusic = {
 
             // click
             $$('.content_music-new').forEach((element, index) => {
-                console.log("vô đây chưa")
                 let orderNumber = element.querySelector('.order_number');
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
                 element.onclick = function (e) {
-                    console.log("đây là lần đầu")
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
@@ -594,13 +583,11 @@ const HomePageMusic = {
 
         // play tracks when click
         $$('.content_music-new').forEach((element, index) => {
-            console.log("vô đây chưa")
             let orderNumber = element.querySelector('.order_number');
             let iconPlay = element.querySelector('.icon_play-tracks');
             let iconPause = element.querySelector('.icon_pause-tracks');
             let toolplay = element.querySelector('.play_track-play-main');
             element.onclick = function (e) {
-                console.log("đây là lần đầu")
 
                 // click different song
                 const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
@@ -952,16 +939,14 @@ const HomePageMusic = {
         let _this = this;
         // click playlist to return tracks music for u
         musicFor.onclick = function (e) {
-            console.log("uaaaaaaaaaaaaaaaaa")
             const playlistIndex = e.target.closest('.playlist__render');
             if (playlistIndex) {
                 mainInforTracks.style.display = "none";
-
                 iconHeadLeft.style.color = "#fff";
+
                 _this.currentIndex = Number(playlistIndex.getAttribute('data-Index'));
                 let titlePlaylist = playlistIndex.querySelector('.img_slide-banner').src;
                 let bannerForU = _this.bannerForU;
-                console.log("do day la chit")
                 let playlistMusicForU = _this.playlistMusicForU;
                 TrackPlaylist.handleRenderTracksForU({ bannerForU, playlistMusicForU, titlePlaylist });
                 mainContent.style.display = "none";
@@ -971,7 +956,6 @@ const HomePageMusic = {
                 $('.list_Tracks-single').style.display = "none";
                 // $('.playlist__header').style.display = "flex";
                 // $('.list_Tracks-single').style.display = "block";
-                console.log("do day la chit")
 
                 // mobile
                 $('.icon_action-mobile').style.display = "none";

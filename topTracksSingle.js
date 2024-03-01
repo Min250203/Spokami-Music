@@ -8,6 +8,8 @@ const artistRelateWrap = $('.hot_music-inforSingle');
 const tracksFanLikeWrap = $('.album_fan-wrap');
 const contentSearch = $('.content_search');
 const iconHeadLeft = $('.left');
+const mainContent = $('.desc__contentmain');
+const mainInforTracks = $('.all__tracks-main');
 
 const END_POINT = window.env.API_URL;
 
@@ -22,8 +24,8 @@ const TopTracksSingle = {
     dataPlaylist: {},
     oldIndex: 0,
     tracksHotAppearMusic: [],
+    tracksfanSoLikeMusic: [],
     handleTracks: async function (props) {
-        console.log("props", props)
         if (props.type === "infor-Single") {
             this.dataSong = props.dataSong;
             this.dataFanSoLike = props.dataFanSoLike;
@@ -83,7 +85,6 @@ const TopTracksSingle = {
                 `
             })
             tracksSingle.innerHTML = htmlsTracks.join("");
-            console.log(tracksSingle)
 
             // click top tracks
             $$('.content_tracks-single').forEach((element, index) => {
@@ -98,8 +99,6 @@ const TopTracksSingle = {
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
                         _this.isPlaying = true;
                         element.classList.add('active_playing-track');
-                        console.log(_this.currentIndex)
-                        console.log(_this.oldIndex)
                         if (_this.currentIndex !== _this.oldIndex) {
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
@@ -178,30 +177,66 @@ const TopTracksSingle = {
                 }
             })
 
-            // // fan so like
-            console.log(_this.dataFanSoLike)
+            // render fan so like
             const htmlTracksFanLike = _this.dataFanSoLike[0].items.slice(0, 6).map((item, index) => {
                 return `
-                <div class="card_box-sing playlist__search">
+                <div class="card_box-sing playlist__search playlist_fan-like">
                     <img class="img_singgle" src="${item.thumbnailM}" alt="">
                      <p class="title_singgle">${item.name}</p>
                 </div>
                 `
             })
-
             tracksFanLikeWrap.innerHTML = htmlTracksFanLike.join("");
 
-            // $$('.album_fan-wrap').forEach((element, index) => {
-            //     element.onclick = function (e) {
-            //         const tracksPlaylist = e.target.closest('.card_box-sing');
-            //         let titlePlaylist = tracksPlaylist.querySelector('.title_singgle').innerText;
-            //         let dataPlaylist = _this.dataValueSearch.playlists
-            //         console.log(dataPlaylist)
-            //         _this.handleEventInforSearch({ dataPlaylist, type: "tracksPlaylist", titlePlaylist });
+            // click fan so like
+            $$('.album_fan-wrap').forEach((element, index) => {
+                element.onclick = async function (e) {
+                    $('.container__maincontent').style.display = "none";
+                    $('.img_updating').style.display = "flex";
+                    $('.img_updating').innerHTML = ` <img src="./assets/updating.svg" class="img_updating-tracks" alt=""> `;
+                    $('.none_of_none-img').style.display = "block";
+                    $('.icon__home-main').onclick = function () {
+                        $('.img_updating').style.display = "none";
+                        mainContent.style.display = "block";
+                        mainInforTracks.style.display = "none";
+                        $('.content').style.display = "block";
+                        $('.container__maincontent').style.display = "block";
+                    }
+                    // const tracksPlaylist = e.target.closest('.playlist_fan-like');
+                    // let titlePlaylist = tracksPlaylist.querySelector('.title_singgle').innerText;
+                    // let idDetailPlaylist = _this.dataFanSoLike[0].items.filter(item => item.name === titlePlaylist)
+                    // await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].id}`)
+                    //     .then(respone => respone.json())
+                    //     .then(data => {
+                    //         _this.tracksfanSoLikeMusic = data.data;
+                    //     })
+                    // iconHeadLeft.style.color = "#fff";
+                    // _this.status = 1;
+                    // // icon left
+                    // iconHeadLeft.onclick = function () {
+                    //     if (_this.status === 1) {
+                    //         iconHeadLeft.style.color = "#fff";
+                    //         contentSearch.style.display = "block";
+                    //         allTracks.style.display = "none";
+                    //         _this.status = 0;
+                    //     } else {
+                    //         iconHeadLeft.style.color = "#9c9c9c";
+                    //         mainContent.style.display = "block";
+                    //         $('.content_search').style.display = "none";
+                    //         mainInforTracks.style.display = "none";
+                    //     }
+                    // }
+                    // contentSearch.style.display = "none";
+                    // allTracks.style.display = "block";
+                    // $('.list__Playlist').style.display = "none";
+                    // $('.list_Tracks-single').style.display = "flex";
+                    // $('.album_relate-active').style.display = "block";
+                    // $('.fan_like-tracks').style.display = "none";
+                    // $('.album_relate-active').style.display = "none";
+                }
+            })
 
-            //     }
-            // })
-
+            // render music hot appear
             const htmlsHotAppearForMusic = props.dataHotAppearMusic.map((item, index) => {
                 return ` 
                         <div class="card_box-sing playlist__search hot_music-appear slide_banner" data-Index=${index}>
@@ -211,16 +246,12 @@ const TopTracksSingle = {
                         `
             })
             artistRelateWrap.innerHTML = htmlsHotAppearForMusic.join("");
-            console.log(artistRelateWrap)
 
             // click hot appear for music
             $$('.artist_box-wrap').forEach((element, index) => {
                 element.onclick = async function (e) {
                     const tracksHotAppear = e.target.closest('.hot_music-appear');
                     let titlePlaylist = tracksHotAppear.querySelector('.img_slide-banner').src;
-                    let dataHotAppearForMusic = props.dataHotAppearMusic
-                    // _this.handleEventInforSearch({ dataHotAppearForMusic, type: "hotMusicForSing", titlePlaylist });
-
                     let idDetailPlaylist = props.dataHotAppearMusic.filter(item => item.thumbnailM === titlePlaylist)
                     await fetch(END_POINT + `/api/detailplaylist?id=${idDetailPlaylist[0].encodeId}`)
                         .then(respone => respone.json())
@@ -245,7 +276,6 @@ const TopTracksSingle = {
                     }
                     let type = "hotAppear-Single";
                     let dataHotAppearMusic = _this.tracksHotAppearMusic;
-                    // let dataInforSingle = _this.dataValueSearch.artists[0];
                     contentSearch.style.display = "none";
                     allTracks.style.display = "block";
                     $('.list__Playlist').style.display = "none";
@@ -253,9 +283,6 @@ const TopTracksSingle = {
                     $('.album_relate-active').style.display = "block";
                     $('.fan_like-tracks').style.display = "none";
                     $('.album_relate-active').style.display = "none";
-                    TopTracksSingle.handleTracks({ dataHotAppearMusic, type });
-
-
                 }
             })
 
@@ -264,7 +291,6 @@ const TopTracksSingle = {
             this.dataAppearSingle = props.dataAppearSingle;
             let dataInforSingle = props.dataInforSingle;
 
-            console.log(this.dataAppearSingle)
             let _this = this
             // header title tracksSingle
             const htmlsTracksAppearSingle = `
@@ -333,8 +359,6 @@ const TopTracksSingle = {
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
                         _this.isPlaying = true;
                         element.classList.add('active_playing-track');
-                        console.log(_this.currentIndex)
-                        console.log(_this.oldIndex)
                         if (_this.currentIndex !== _this.oldIndex) {
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
@@ -417,7 +441,6 @@ const TopTracksSingle = {
             this.dataHotAppearMusic = props.dataHotAppearMusic;
             let dataInforSingle = props.dataInforSingle;
 
-            console.log(this.dataHotAppearMusic)
             let _this = this
             // header title tracksSingle
             const htmlsTracksAppearSingle = `
@@ -486,8 +509,6 @@ const TopTracksSingle = {
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
                         _this.isPlaying = true;
                         element.classList.add('active_playing-track');
-                        console.log(_this.currentIndex)
-                        console.log(_this.oldIndex)
                         if (_this.currentIndex !== _this.oldIndex) {
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
@@ -570,7 +591,6 @@ const TopTracksSingle = {
             this.dataPlaylist = props.dataPlaylist;
             let dataInforSingle = props.dataInforSingle;
 
-            console.log(this.dataPlaylist)
             let _this = this
             // header title tracksSingle
             const htmlsTracksAppearSingle = `
@@ -587,7 +607,6 @@ const TopTracksSingle = {
             headerInfor.innerHTML = htmlsTracksAppearSingle;
 
             const htmlsTracks = _this.dataPlaylist.song.items.map((item, index) => {
-                console.log(_this.dataPlaylist)
                 // // total time music
                 let time = Math.floor(item.duration)
                 let totalHours = parseInt(time / 3600);
@@ -640,8 +659,6 @@ const TopTracksSingle = {
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
                         _this.isPlaying = true;
                         element.classList.add('active_playing-track');
-                        console.log(_this.currentIndex)
-                        console.log(_this.oldIndex)
                         if (_this.currentIndex !== _this.oldIndex) {
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
                             $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
@@ -722,19 +739,14 @@ const TopTracksSingle = {
         }
         else if (props.type === "infor-RelateSingle") {
             let tilteArtistRelate = props.tilteArtistRelate;
-            console.log(tilteArtistRelate)
-            console.log(props.itemSingle)
             let artistParameters = props.artistParameters;
             let artistRelate = props.artistRelate;
             let _this = this;
             let nameArtistRelate = artistRelate.filter((item) => item.name === tilteArtistRelate);
-            console.log(nameArtistRelate)
             await fetch('https://api.spotify.com/v1/artists/' + nameArtistRelate[0].id + '/top-tracks' + '?market=VN&limit=50', artistParameters)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     return _this.tracksInfor = data.tracks;
-
                 })
                 .catch(error => console.error('Error:', error))
             // header title tracksSingle
