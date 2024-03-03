@@ -59,6 +59,7 @@ const SearchMusic = {
             // get with Artist IA all albums from that artist
             if (_this.type === "album") {
                 const htmlsAlbumSearch = _this.dataValueSearch.artists[0].map((album, index) => {
+                    console.log("album", album)
                     let yearAlbum = album.release_date.split("-", 1);
                     return `
                 <div class="card_box-sing playlist__search" data-Index=${index}>

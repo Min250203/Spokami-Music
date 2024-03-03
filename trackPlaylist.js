@@ -1,4 +1,5 @@
 const headerInfor = $('.playlist_header-infor');
+const tracksHeaderInfor = $('.tracks_header-infor');
 const allTracksPlaylist = $('.all_tracks');
 const audio = $('#audio');
 const progress = $('#progress');
@@ -14,6 +15,8 @@ const btnRandom = $('.btn-random');
 const allMainContent = $('.container__maincontent');
 const allMainInforSingle = $('.conatiner__infor_tracks-playing');
 const btnRepeat = $('.btn-repeat');
+const elLyric = document.querySelector(".render_lyric");
+const iconHeadLeft = $('.left');
 
 const END_POINT = window.env.API_URL;
 const TrackPlaylist = {
@@ -31,6 +34,10 @@ const TrackPlaylist = {
     isRandom: false,
     isRepeat: false,
     message: '',
+    sentences: [],
+    status: 0,
+    inforArtist: {},
+    type: 0,
     handleRenderTracksForU: async function (props) {
         let _this = this;
         let PlaylistForU = props.playlistMusicForU[0].items.filter((item) => item.banner === props.titlePlaylist)
@@ -42,36 +49,6 @@ const TrackPlaylist = {
                 _this.message = data.msg;
             })
             .catch(error => console.error(error))
-
-        // await fetch(END_POINT + `/api/lyric?id=Z69C9IB7`)
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         const elLyric = document.querySelector(".render-lyric");
-        //         const sentences = data.data.sentences;
-
-        //         sentences.map((sentence) => {
-        //             const words = sentence.words;
-        //             let key;
-        //             let lyric = "";
-
-        //             words.map((word, index) => {
-        //                 if(index === 0) {
-        //                     key = word.startTime;
-        //                 }
-        //                 lyric += `${word.data} `
-        //             })
-
-        //             _this.fullLyric[key] = lyric;
-        //         })
-
-        //         const htmlLyric = Object.values(_this.fullLyric).map((item) => (
-        //             `<p>${item}</p>`
-        //         ))
-
-        //         elLyric.innerHTML = htmlLyric.join("")
-        //     })
-        //     .catch(error => console.error(error))
-
 
         //   inforHeader playlist
         if (_this.message === "Success") {
@@ -158,47 +135,150 @@ const TrackPlaylist = {
             let iconPlay = element.querySelector('.icon_play-tracks');
             let iconPause = element.querySelector('.icon_pause-tracks');
             let toolplay = element.querySelector('.play_track-play-main');
-            element.onclick = function (e) {
+            element.onclick = async function (e) {
                 // click different song
                 const songIndex = e.target.closest('.content__sing-wrap:not(.active_playing-track)');
-                if (songIndex) {
-                    let orderNumber = element.querySelector('.order_number');
-                    _this.currentIndex = Number(element.getAttribute('data-Index'));
-                    _this.isPlaying = true;
-                    element.classList.add('active_playing-track');
-                    if (_this.currentIndex !== _this.oldIndex) {
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                        _this.oldIndex = Number(element.getAttribute('data-Index'));
-                    }
+                if (songIndex || e.target.closest('.name_sing')) {
+                    // GET infor artist
                     _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                    let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                    let dataAllTrack = _this.allTracksPlaylist.song.items;
-                    // show descr song
-                    $('.name__music').style.display = "block";
-                    $('.img__played').style.display = "block";
+                    await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                        .then(respone => respone.json())
+                        .then(data => {
+                            _this.inforArtist = data.data;
+                            console.log("_this.inforArtist", _this.inforArtist)
+                        })
+                    if (songIndex && !e.target.closest('.name_sing')) {
+                        let orderNumber = element.querySelector('.order_number');
+                        _this.currentIndex = Number(element.getAttribute('data-Index'));
+                        _this.isPlaying = true;
+                        element.classList.add('active_playing-track');
+                        if (_this.currentIndex !== _this.oldIndex) {
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                            _this.oldIndex = Number(element.getAttribute('data-Index'));
+                        }
+                        _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        let dataAllTrack = _this.allTracksPlaylist.song.items;
+                        // show descr song
+                        $('.name__music').style.display = "block";
+                        $('.img__played').style.display = "block";
 
-                    // show descr single when playing
-                    // css for main content
-                    allMainInforSingle.style.display = "block";
-                    allMainContent.style.width = "75%";
-                    allMainContent.style.margin = "0";
-                    $('.icon__close-tab_infor').style.display = "block";
+                        // show descr single when playing
 
-                    $('.infor__playlist').style.display = "flex";
+                        // css for main content
+                        allMainInforSingle.style.display = "block";
+                        allMainContent.style.width = "75%";
+                        allMainContent.style.margin = "0";
+                        $('.icon__close-tab_infor').style.display = "block";
+                        $('.infor__playlist').style.display = "flex";
+                        $('.img__album_tracks-playing').innerHTML = `<img class="img__album-playing"src=${_this.dataTrackPlaying.thumbnailM} alt="">`
+                        $('.img__infor_artist-playing').innerHTML = `<img class="img__album-playing"src=${_this.inforArtist.thumbnailM} alt="">`
+                        $('.name__album_tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.album.title}</p>`;
+                        $('.name__sing_tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.title}</p>`;
+                        $('.name__artist-tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.artistsNames}</p>`;
+                        $('.name__artist-playing').innerHTML = `<p>${_this.dataTrackPlaying.artistsNames}</p>`;
+                        $('.name__album_artist-playing').innerHTML = `<p>${_this.dataTrackPlaying.album.title}</p>`;
 
-                    // show icon
-                    orderNumber.style.display = "none";
-                    toolplay.style.display = "block";
-                    iconPlay.style.display = "none";
-                    iconPause.style.display = "block";
+                        // show icon
+                        orderNumber.style.display = "none";
+                        toolplay.style.display = "block";
+                        iconPlay.style.display = "none";
+                        iconPause.style.display = "block";
 
-                    // change icon play
-                    $('.play_track-play-main').classList.add('playing');
-                    TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
-                } else {
+                        // change icon play
+                        $('.play_track-play-main').classList.add('playing');
+                        TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
+                    }
+
+                    if (e.target.closest('.name_sing')) {
+                        _this.currentIndex = Number(element.getAttribute('data-Index'));
+                        _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                _this.sentences = data.data.sentences;
+                                _this.fullLyric = {};
+                            })
+                            .catch(error => console.error(error))
+                        _this.status = 1;
+                        // icon left
+                        iconHeadLeft.onclick = function () {
+                            if (_this.status === 1) {
+                                iconHeadLeft.style.color = "#fff";
+                                $('.infor__lyric').style.display = "none";
+                                headerInfor.style.display = "block";
+                                tracksHeaderInfor.style.display = "none";
+                                $('.playlist__sings-wrap').style.display = "grid";
+                                $('.action-right').style.display = "flex";
+                                // close tab infor single
+                                $('.conatiner__infor_tracks-playing').style.display = "none";
+                                allMainContent.style.width = "85%";
+                                allMainContent.style.margin = "auto";
+                                _this.status = 0;
+                            } else {
+                                iconHeadLeft.style.color = "#fff";
+                                mainContent.style.display = "block";
+                                $('.all__tracks-main ').style.display = "none";
+                                // close tab infor single
+                                $('.conatiner__infor_tracks-playing').style.display = "none";
+                                allMainContent.style.width = "85%";
+                                allMainContent.style.margin = "auto";
+
+                            }
+                        }
+                        $('.infor__lyric').style.display = "block"
+                        $('.playlist__sings-wrap').style.display = "none";
+                        $('.action-right').style.display = "none";
+                        $('.infor__artist_lyric-wrap').style.display = "block";
+                        headerInfor.style.display = "none";
+                        tracksHeaderInfor.style.display = "block";
+                        let yearAlbum = _this.dataTrackPlaying.album.releaseDate.split("/");
+                        const htmlsInforPlaylistHeader = `
+                                <div class="playlist__header">
+                                    <div class="playlist_img">
+                                        <img src="${_this.dataTrackPlaying.thumbnailM}"
+                                            alt="">
+                                    </div>
+                                    <div class="categories_descr">
+                                        <p class="name_playlist">Bài hát</p>
+                                        <h1 class="playlist__title-header">${_this.dataTrackPlaying.title}</h1>
+                                        <p class="playlist_descr"> ${_this.dataTrackPlaying.artistsNames + " • " + _this.dataTrackPlaying.album.title + " • " + yearAlbum[2]}</p>
+                                    </div>
+                                </div>
+                                `
+                        tracksHeaderInfor.innerHTML = htmlsInforPlaylistHeader;
+
+                        // render lyric
+                        _this.sentences.map((sentence) => {
+                            const words = sentence.words;
+                            let key;
+                            let lyric = "";
+
+                            words.map((word, index) => {
+                                if (index === 0) {
+                                    key = Math.floor(word.startTime / 1000);
+                                }
+                                lyric += `${word.data} `
+                            })
+
+                            _this.fullLyric[key] = lyric;
+                        })
+                        const htmlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                            `<p class="lyric_${key}">${item}</p>`
+                        ))
+
+                        elLyric.innerHTML = htmlLyric.join("");
+
+                        // render infor artist
+                        $('.img__artist_lyric').innerHTML = `<img class="img__artist_" src=${_this.inforArtist.thumbnailM} alt="">`;
+                        $('.name__artist_lyric').innerHTML = `<p class="name__artist_">${_this.inforArtist.name}</p>`
+
+                    }
+                }
+                else {
                     // click to pause
                     let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
                     let dataAllTrack = _this.allTracksPlaylist.song.items;
@@ -210,9 +290,11 @@ const TrackPlaylist = {
                         iconPause.style.display = "none";
                         playBtn.classList.remove('playing');
                         element.classList.remove('active_playing-track');
+                        _this.isPlaying = false;
                         TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack, status: "pause" });
                     }
                 }
+
             }
         })
 
@@ -255,13 +337,15 @@ const TrackPlaylist = {
         })
 
         // click close tab infor tracks
-        $('.icon__close-tab_infor').onclick = function() {
+        $('.icon__close-tab_infor').onclick = function () {
             $('.conatiner__infor_tracks-playing').style.display = "none";
             allMainContent.style.width = "85%";
             allMainContent.style.margin = "auto";
-
-
         }
+
+
+
+
     },
     handleRenderTracksTab1: async function (props) {
         let _this = this;
@@ -491,46 +575,50 @@ const TrackPlaylist = {
             element.onclick = function (e) {
                 // click different song
                 const songIndex = e.target.closest('.content__sing-wrap:not(.active_playing-track)');
-                if (songIndex) {
-                    let orderNumber = element.querySelector('.order_number');
-                    _this.currentIndex = Number(element.getAttribute('data-Index'));
-                    _this.isPlaying = true;
-                    element.classList.add('active_playing-track');
-                    if (_this.currentIndex !== _this.oldIndex) {
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                        $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                        _this.oldIndex = Number(element.getAttribute('data-Index'));
-                    }
-                    _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                    let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                    let dataAllTrack = _this.allTracksPlaylist.song.items;
-                    // show descr song
-                    $('.name__music').style.display = "block";
-                    $('.img__played').style.display = "block";
+                if (songIndex || e.target.closest('.name_sing')) {
+                    if (songIndex) {
+                        let orderNumber = element.querySelector('.order_number');
+                        _this.currentIndex = Number(element.getAttribute('data-Index'));
+                        _this.isPlaying = true;
+                        element.classList.add('active_playing-track');
+                        if (_this.currentIndex !== _this.oldIndex) {
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                            $(`.content__sing-wrap[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                            _this.oldIndex = Number(element.getAttribute('data-Index'));
+                        }
+                        _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        let dataAllTrack = _this.allTracksPlaylist.song.items;
+                        // show descr song
+                        $('.name__music').style.display = "block";
+                        $('.img__played').style.display = "block";
 
-                    // show icon
-                    orderNumber.style.display = "none";
-                    toolplay.style.display = "block";
-                    iconPlay.style.display = "none";
-                    iconPause.style.display = "block";
-
-                    // change icon play
-                    $('.play_track-play-main').classList.add('playing');
-                    TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
-                } else {
-                    // click to pause
-                    let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                    let dataAllTrack = _this.allTracksPlaylist.song.items;
-                    if (_this.isPlaying) {
-                        _this.isPlaying = false;
+                        // show icon
                         orderNumber.style.display = "none";
                         toolplay.style.display = "block";
-                        iconPlay.style.display = "block";
-                        iconPause.style.display = "none";
-                        element.classList.remove('active_playing-track');
-                        TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack, status: "pause" });
+                        iconPlay.style.display = "none";
+                        iconPause.style.display = "block";
+
+                        // change icon play
+                        $('.play_track-play-main').classList.add('playing');
+                        TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
+                    } else {
+                        // click to pause
+                        let dataTrack = _this.allTracksPlaylist.song.items[_this.currentIndex];
+                        let dataAllTrack = _this.allTracksPlaylist.song.items;
+                        if (_this.isPlaying) {
+                            _this.isPlaying = false;
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "block";
+                            iconPause.style.display = "none";
+                            element.classList.remove('active_playing-track');
+                            TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack, status: "pause" });
+                        }
+                    }
+                    if (e.target.closest('.name_sing')) {
                     }
                 }
 
@@ -1090,6 +1178,12 @@ const TrackPlaylist = {
                 let totalNumberOfCurentSeconds = (currentMinutes < 10 ? "0" + currentMinutes : currentMinutes) + ":" + (currentSeconds < 10 ? "0" + currentSeconds : currentSeconds);
                 $('.current_time').innerHTML = `<div class="current_time-play">${totalNumberOfCurentSeconds}</div>`;
 
+                // const isExitLyric = _this.fullLyric[Math.floor(audio.currentTime)];
+                // if(isExitLyric) {
+                //     const el = document.querySelector(`.lyric_${Math.floor(audio.currentTime)}`);
+                //     el.style.color = "red"
+                // }
+
                 // total time
                 let time = Math.floor(audio.duration)
                 let totalHours = parseInt(time / 3600);
@@ -1201,7 +1295,8 @@ const TrackPlaylist = {
         if (prop?.status === "pause") {
             audio.pause(prop?.iconTrackPlay ? prop.iconTrackPlay : '');
             playBtn.classList.remove('playing');
-        } else {
+        }
+        else {
             audio.play(prop?.iconTrackPause ? prop.iconTrackPause : '');
             playBtn.classList.add('playing');
             this.handlePlay();

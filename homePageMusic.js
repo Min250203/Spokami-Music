@@ -105,6 +105,10 @@ const HomePageMusic = {
                 $('.content_bxh-new').style.display = "none";
                 mainInforTracks.style.display = "none";
                 $('.content').style.display = "block";
+                // close tab infor single
+                $('.conatiner__infor_tracks-playing').style.display = "none";
+                allMainContent.style.width = "85%";
+                allMainContent.style.margin = "auto";
 
             }
             await fetch(END_POINT + `/api/newreleasechart`)
@@ -775,6 +779,10 @@ const HomePageMusic = {
             mainContent.style.display = "block";
             $('.content_search').style.display = "none";
             mainInforTracks.style.display = "none";
+            // close tab infor single
+            $('.conatiner__infor_tracks-playing').style.display = "none";
+            allMainContent.style.width = "85%";
+            allMainContent.style.margin = "auto";
         }
 
         // when click homeMain
@@ -784,6 +792,10 @@ const HomePageMusic = {
             $('.content_search').style.display = "none";
             $('.content_search-mobile').style.display = "none";
             mainInforTracks.style.display = "none";
+            // close tab infor single
+            $('.conatiner__infor_tracks-playing').style.display = "none";
+            allMainContent.style.width = "85%";
+            allMainContent.style.margin = "auto";
         }
 
         // when input
