@@ -37,7 +37,6 @@ const TrackPlaylist = {
     sentences: [],
     status: 0,
     inforArtist: {},
-    type: 0,
     handleRenderTracksForU: async function (props) {
         let _this = this;
         let PlaylistForU = props.playlistMusicForU[0].items.filter((item) => item.banner === props.titlePlaylist)
@@ -140,6 +139,7 @@ const TrackPlaylist = {
                 const songIndex = e.target.closest('.content__sing-wrap:not(.active_playing-track)');
                 if (songIndex || e.target.closest('.name_sing')) {
                     // GET infor artist
+                    _this.currentIndex = Number(element.getAttribute('data-Index'));
                     _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
                     await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
                         .then(respone => respone.json())
@@ -147,6 +147,16 @@ const TrackPlaylist = {
                             _this.inforArtist = data.data;
                             console.log("_this.inforArtist", _this.inforArtist)
                         })
+
+                    // render lyric
+                    await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            _this.sentences = data.data.sentences;
+                            _this.fullLyric = {};
+                        })
+                        .catch(error => console.error(error))
+
                     if (songIndex && !e.target.closest('.name_sing')) {
                         let orderNumber = element.querySelector('.order_number');
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
@@ -167,7 +177,6 @@ const TrackPlaylist = {
                         $('.img__played').style.display = "block";
 
                         // show descr single when playing
-
                         // css for main content
                         allMainInforSingle.style.display = "block";
                         allMainContent.style.width = "75%";
@@ -191,18 +200,33 @@ const TrackPlaylist = {
                         // change icon play
                         $('.play_track-play-main').classList.add('playing');
                         TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
+
+                        // render lyric
+                        _this.sentences.map((sentence) => {
+                            const words = sentence.words;
+                            let key;
+                            let lyric = "";
+
+                            words.map((word, index) => {
+                                if (index === 0) {
+                                    key = Math.floor(word.startTime / 1000);
+                                }
+                                lyric += `${word.data} `
+                            })
+
+                            _this.fullLyric[key] = lyric;
+                        })
+                        // render lyric control
+                        const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                            `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                        ))
+                        $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
+
                     }
 
                     if (e.target.closest('.name_sing')) {
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
                         _this.dataTrackPlaying = _this.allTracksPlaylist.song.items[_this.currentIndex];
-                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                _this.sentences = data.data.sentences;
-                                _this.fullLyric = {};
-                            })
-                            .catch(error => console.error(error))
                         _this.status = 1;
                         // icon left
                         iconHeadLeft.onclick = function () {
@@ -1178,12 +1202,19 @@ const TrackPlaylist = {
                 let totalNumberOfCurentSeconds = (currentMinutes < 10 ? "0" + currentMinutes : currentMinutes) + ":" + (currentSeconds < 10 ? "0" + currentSeconds : currentSeconds);
                 $('.current_time').innerHTML = `<div class="current_time-play">${totalNumberOfCurentSeconds}</div>`;
 
-                // const isExitLyric = _this.fullLyric[Math.floor(audio.currentTime)];
-                // if(isExitLyric) {
-                //     const el = document.querySelector(`.lyric_${Math.floor(audio.currentTime)}`);
-                //     el.style.color = "red"
-                // }
+                const isExitLyric = _this.fullLyric[timeCurrent];
+                const renderLyricControl = document.querySelector(`.lyric_control_${timeCurrent}`);
+                if (isExitLyric) {
+                    renderLyricControl.style.color = "#1ed760";
+                    renderLyricControl.classList.add('isPlayed');
 
+                    const autoRemoveId = setTimeout(function () {
+                        renderLyricControl.style.display = "none";
+                        console.log("none")
+
+                    }, timeCurrent + 6000);
+
+                }
                 // total time
                 let time = Math.floor(audio.duration)
                 let totalHours = parseInt(time / 3600);

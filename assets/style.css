@@ -448,6 +448,7 @@ html {
 
 .container__audio {
     display: flex;
+    align-items: center;
     background-color: #000;
     position: fixed;
     height: 75px;
@@ -1957,4 +1958,15 @@ html {
 .name__artist_:hover {
     border-bottom: 2px solid #fff;
     cursor: pointer;
+}
+
+.render__lyric_control{
+    width: 25%;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    height: 80%;
+    overflow: hidden;
+    text-align: center;
+    line-height: 20px;
 }
