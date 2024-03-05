@@ -30,6 +30,7 @@ const btnPage = $('.btn_icon-mobile');
 const homeMainPage = $('.home_');
 const searchMainPage = $('.search_');
 const libraMainPage = $('.libra_');
+const allMainInforSingle = $('.container__infor_tracks-playing');
 const accountMainPage = $('.account_');
 const tracksBXHSingle = $('.content_sing-bxh');
 const allMainContent = $('.container__maincontent');
@@ -72,6 +73,9 @@ const HomePageMusic = {
     oldIndex: 0,
     clickSong: 0,
     singBXH: [],
+    fullLyric: {},
+    showLyric: [],
+    inforArtist: {},
     handleRenderMusic: async function () {
         let _this = this;
         // when scroll
@@ -97,6 +101,11 @@ const HomePageMusic = {
                 $('.content_bxh-new').style.display = "none";
                 mainInforTracks.style.display = "none";
                 $('.content').style.display = "block";
+                 // close tab infor single
+                 $('.container__infor_tracks-playing').style.display = "none";
+                 allMainContent.style.width = "85%";
+                 allMainContent.style.margin = "auto";
+                 $('.content__lyric').style.display = "none";
             }
 
             mainPage.onclick = function () {
@@ -106,7 +115,7 @@ const HomePageMusic = {
                 mainInforTracks.style.display = "none";
                 $('.content').style.display = "block";
                 // close tab infor single
-                $('.conatiner__infor_tracks-playing').style.display = "none";
+                $('.container__infor_tracks-playing').style.display = "none";
                 allMainContent.style.width = "85%";
                 allMainContent.style.margin = "auto";
 
@@ -115,7 +124,11 @@ const HomePageMusic = {
                 .then(respone => respone.json())
                 .then(data => {
                     _this.singBXH = data.data.items;
+                    _this.bannerBXH = data.data.banner;
                 })
+
+            // render banner bxh
+            $('.banner__bxh').innerHTML = `<img class="img__banner_" src="${_this.bannerBXH}" alt="">`
 
             const htmlsTracks = _this.singBXH.map((item, index) => {
                 // // total time music
@@ -163,40 +176,182 @@ const HomePageMusic = {
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
-                element.onclick = function (e) {
+                element.onclick = async function (e) {
 
                     // click different song
                     const songIndex = e.target.closest('.content_tracks-single:not(.active_playing-track)');
-                    if (songIndex) {
-                        let orderNumber = element.querySelector('.order_number');
+                    if (songIndex || e.target.closest('.name_sing')) {
+                        // GET infor artist
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
-                        _this.isPlaying = true;
-                        element.classList.add('active_playing-track');
-                        if (_this.currentIndex !== _this.oldIndex) {
-                            $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                            $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                            $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                            $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                            _this.oldIndex = Number(element.getAttribute('data-Index'));
-                            // _this.clickSong = 0;
+                        _this.dataTrackPlaying = _this.singBXH[_this.currentIndex];
+                        await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                            .then(respone => respone.json())
+                            .then(data => {
+                                _this.inforArtist = data.data;
+                            })
+
+                        // render lyric
+                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                _this.sentences = data.data.sentences;
+                                _this.fullLyric = {};
+                            })
+                            .catch(error => console.error(error))
+                        if (songIndex && !e.target.closest('.name_sing')) {
+                            let orderNumber = element.querySelector('.order_number');
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                                $(`.content_tracks-single[data-Index="${_this.oldIndex}"]`).querySelector('.name_sing').style.color = "#fff";
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                            }
+                            _this.dataTrackPlaying = _this.singBXH[_this.currentIndex];
+                            let dataTrack = _this.singBXH[_this.currentIndex];
+                            let dataAllTrack = _this.singBXH;
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show descr single when playing
+                            // css for main content
+                            allMainInforSingle.style.display = "block";
+                            allMainContent.style.width = "75%";
+                            allMainContent.style.margin = "0";
+                            $('.icon__close-tab_infor').style.display = "block";
+                            $('.infor__playlist').style.display = "flex";
+                            $('.img__album_tracks-playing').innerHTML = `<img class="img__album-playing"src=${_this.dataTrackPlaying.thumbnailM} alt="">`
+                            $('.img__infor_artist-playing').innerHTML = `<img class="img__album-playing"src=${_this.inforArtist.thumbnailM} alt="">`
+                            $('.name__album_tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.album.title}</p>`;
+                            $('.name__sing_tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.title}</p>`;
+                            $('.name__artist-tracks-playing').innerHTML = `<p>${_this.dataTrackPlaying.artistsNames}</p>`;
+                            $('.name__artist-playing').innerHTML = `<p>${_this.dataTrackPlaying.artistsNames}</p>`;
+                            $('.name__album_artist-playing').innerHTML = `<p>${_this.dataTrackPlaying.album.title}</p>`;
+
+                            // show icon
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change color name sing
+                            let nameTracks = element.querySelector('.name_sing');
+                            nameTracks.style.color = "#1ed760";
+
+
+                            // change icon play
+                            $('.play_track-play-main').classList.add('playing');
+                            TrackPlaylist.loadCurrentSong({ type: "tracks-play", dataTrack, dataAllTrack });
+
+                            // render lyric
+                            _this.sentences.map((sentence) => {
+                                const words = sentence.words;
+                                let key;
+                                let lyric = "";
+
+                                words.map((word, index) => {
+                                    if (index === 0) {
+                                        key = Math.floor(word.startTime / 1000);
+                                    }
+                                    lyric += `${word.data} `
+                                })
+
+                                _this.fullLyric[key] = lyric;
+                            })
+                            // render lyric control
+                            const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                                `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                            ))
+                            $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
 
                         }
-                        _this.dataTrackPlaying = _this.singBXH[_this.currentIndex];
-                        let dataTrack = _this.singBXH[_this.currentIndex];
-                        // show descr song
-                        $('.name__music').style.display = "block";
-                        $('.img__played').style.display = "block";
+                        if (e.target.closest('.name_sing')) {
+                            $('.content__lyric').style.display = "flex";
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.dataTrackPlaying = _this.singBXH[_this.currentIndex];
+                            _this.status = 1;
+                            // icon left
+                            iconHeadLeft.onclick = function () {
+                                if (_this.status === 1) {
+                                    iconHeadLeft.style.color = "#fff";
+                                    $('.infor__lyric').style.display = "none";
+                                    headerInfor.style.display = "block";
+                                    tracksHeaderInfor.style.display = "none";
+                                    $('.playlist__sings-wrap').style.display = "grid";
+                                    $('.action-right').style.display = "flex";
+                                    // close tab infor single
+                                    $('.container__infor_tracks-playing').style.display = "none";
+                                    allMainContent.style.width = "85%";
+                                    allMainContent.style.margin = "auto";
+                                    $('.content__lyric').style.display = "none";
+                                    _this.status = 0;
+                                } else {
+                                    $('.content__lyric').style.display = "none";
+                                    iconHeadLeft.style.color = "#fff";
+                                    mainContent.style.display = "block";
+                                    $('.all__tracks-main ').style.display = "none";
+                                    // close tab infor single
+                                    $('.container__infor_tracks-playing').style.display = "none";
+                                    allMainContent.style.width = "85%";
+                                    allMainContent.style.margin = "auto";
 
-                        // show icon
-                        orderNumber.style.display = "none";
-                        toolplay.style.display = "block";
-                        iconPlay.style.display = "none";
-                        iconPause.style.display = "block";
+                                }
+                            }
+                            $('.infor__lyric').style.display = "block"
+                            $('.playlist__sings-wrap').style.display = "none";
+                            $('.action-right').style.display = "none";
+                            $('.infor__artist_lyric-wrap').style.display = "block";
+                            headerInfor.style.display = "none";
+                            tracksHeaderInfor.style.display = "block";
+                            let yearAlbum = _this.dataTrackPlaying.album.releaseDate.split("/");
+                            const htmlsInforPlaylistHeader = `
+                                        <div class="playlist__header">
+                                            <div class="playlist_img">
+                                                <img src="${_this.dataTrackPlaying.thumbnailM}"
+                                                    alt="">
+                                            </div>
+                                            <div class="categories_descr">
+                                                <p class="name_playlist">Bài hát</p>
+                                                <h1 class="playlist__title-header">${_this.dataTrackPlaying.title}</h1>
+                                                <p class="playlist_descr"> ${_this.dataTrackPlaying.artistsNames + " • " + _this.dataTrackPlaying.album.title + " • " + yearAlbum[2]}</p>
+                                            </div>
+                                        </div>
+                                        `
+                            tracksHeaderInfor.innerHTML = htmlsInforPlaylistHeader;
 
-                        // change icon play
-                        $('.play_track-play-main').classList.add('playing');
-                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
-                    } else {
+                            // render lyric
+                            _this.sentences.map((sentence) => {
+                                const words = sentence.words;
+                                let key;
+                                let lyric = "";
+
+                                words.map((word, index) => {
+                                    if (index === 0) {
+                                        key = Math.floor(word.startTime / 1000);
+                                    }
+                                    lyric += `${word.data} `
+                                })
+
+                                _this.fullLyric[key] = lyric;
+                            })
+                            const htmlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                                `<p class="lyric_${key}">${item}</p>`
+                            ))
+
+                            elLyric.innerHTML = htmlLyric.join("");
+
+                            // render infor artist
+                            $('.img__artist_lyric').innerHTML = `<img class="img__artist_" src=${_this.inforArtist.thumbnailM} alt="">`;
+                            $('.name__artist_lyric').innerHTML = `<p class="name__artist_">${_this.inforArtist.name}</p>`
+
+                        }
+                    }
+                    else {
                         // click to pause
                         let dataTrack = _this.singBXH[_this.currentIndex];
                         let dataAllTrack = _this.singBXH;
@@ -253,6 +408,13 @@ const HomePageMusic = {
                 }
             })
 
+            // click close tab infor tracks
+            $('.icon__close-tab_infor').onclick = function () {
+                $('.container__infor_tracks-playing').style.display = "none";
+                allMainContent.style.width = "85%";
+                allMainContent.style.margin = "auto";
+            }
+
         }
 
         // data categories
@@ -261,9 +423,9 @@ const HomePageMusic = {
             .then(data => {
                 _this.playlistMusicForU = data.data.items.filter((item) => item.sectionId == "hSlider");
                 _this.playlistMusicNewlyLunched = data.data.items.filter((item) => item.sectionType == "new-release");
-                _this.playlistMusicTab1 = data.data.items[3];
-                _this.playlistMusicTab2 = data.data.items[4];
-                _this.playlistMusicTab3 = data.data.items[5];
+                _this.playlistMusicTab1 = data.data.items[3 + 1];
+                _this.playlistMusicTab2 = data.data.items[4 + 1];
+                _this.playlistMusicTab3 = data.data.items[5 + 1];
                 _this.playlistMusicTop = data.data.items.filter((item) => item.sectionId == "h100");
                 _this.playlistMusicHot = data.data.items.filter((item) => item.sectionId == "hAlbum");
 
@@ -349,43 +511,95 @@ const HomePageMusic = {
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
-                element.onclick = function (e) {
+                element.onclick = async function (e) {
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
-                    if (songIndex) {
-                        let orderNumber = element.querySelector('.order_number');
+                    if (songIndex || e.target.closest('.name_single')) {
+                        // GET infor artist
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
-                        _this.isPlaying = true;
-                        element.classList.add('active_playing-track');
-                        if (_this.currentIndex !== _this.oldIndex) {
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                            _this.oldIndex = Number(element.getAttribute('data-Index'));
-                            // _this.clickSong = 0;
+                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                        await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                            .then(respone => respone.json())
+                            .then(data => {
+                                _this.inforArtist = data.data;
+                            })
+
+                        // render lyric
+                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                _this.sentences = data.data.sentences;
+                                _this.fullLyric = {};
+                            })
+                            .catch(error => console.error(error))
+                        if (songIndex && !e.target.closest('.name_single')) {
+                            let orderNumber = element.querySelector('.order_number');
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.name_sing').style.color = "#fff";
+
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                                // _this.clickSong = 0;
+
+                            }
+                            _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                            let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show icon
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change color name sing
+                            let nameTracks = element.querySelector('.name_sing');
+                            nameTracks.style.color = "#1ed760";
+
+                            // render lyric
+                            _this.sentences.map((sentence) => {
+                                const words = sentence.words;
+                                let key;
+                                let lyric = "";
+
+                                words.map((word, index) => {
+                                    if (index === 0) {
+                                        key = Math.floor(word.startTime / 1000);
+                                    }
+                                    lyric += `${word.data} `
+                                })
+
+                                _this.fullLyric[key] = lyric;
+                                _this.showLyric.push(key)
+                            })
+                            // render lyric control
+                            const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                                `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                            ))
+                            // const htmRenderlLyric = _this.showLyric.slice(_this.indexLyric, _this.indexLyric + 2).map(key => (
+                            //     `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${_this.fullLyric[key]}</p>`
+                            // ))
+                            // _this.indexLyric = 
+                            $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
+
+                            // change icon play
+                            $('.play_track-play-main').classList.add('playing');
+                            let lyric = _this.fullLyric;
+                            let showLyric = _this.showLyric;
+                            TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, lyric, showLyric });
 
                         }
-                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
-                        let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
-                        // show descr song
-                        $('.name__music').style.display = "block";
-                        $('.img__played').style.display = "block";
-
-                        // show icon
-                        orderNumber.style.display = "none";
-                        toolplay.style.display = "block";
-                        iconPlay.style.display = "none";
-                        iconPause.style.display = "block";
-
-                        // change icon play
-                        $('.play_track-play-main').classList.add('playing');
-                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
-
-
-
-                    } else {
+                    }
+                    else {
                         // click to pause
                         let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
                         let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
@@ -399,7 +613,9 @@ const HomePageMusic = {
                             TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, status: "pause" });
                         }
                     }
+
                 }
+
             })
         }
 
@@ -440,43 +656,95 @@ const HomePageMusic = {
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
-                element.onclick = function (e) {
+                element.onclick = async function (e) {
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
-                    if (songIndex) {
-                        let orderNumber = element.querySelector('.order_number');
+                    if (songIndex || e.target.closest('.name_single')) {
+                        // GET infor artist
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
-                        _this.isPlaying = true;
-                        element.classList.add('active_playing-track');
-                        if (_this.currentIndex !== _this.oldIndex) {
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                            _this.oldIndex = Number(element.getAttribute('data-Index'));
-                            // _this.clickSong = 0;
+                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
+                        await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                            .then(respone => respone.json())
+                            .then(data => {
+                                _this.inforArtist = data.data;
+                            })
+
+                        // render lyric
+                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                _this.sentences = data.data.sentences;
+                                _this.fullLyric = {};
+                            })
+                            .catch(error => console.error(error))
+                        if (songIndex && !e.target.closest('.name_single')) {
+                            let orderNumber = element.querySelector('.order_number');
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.name_sing').style.color = "#fff";
+
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                                // _this.clickSong = 0;
+
+                            }
+                            _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
+                            let dataTrack = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show icon
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change color name sing
+                            let nameTracks = element.querySelector('.name_sing');
+                            nameTracks.style.color = "#1ed760";
+
+                            // render lyric
+                            _this.sentences.map((sentence) => {
+                                const words = sentence.words;
+                                let key;
+                                let lyric = "";
+
+                                words.map((word, index) => {
+                                    if (index === 0) {
+                                        key = Math.floor(word.startTime / 1000);
+                                    }
+                                    lyric += `${word.data} `
+                                })
+
+                                _this.fullLyric[key] = lyric;
+                                _this.showLyric.push(key)
+                            })
+                            // render lyric control
+                            const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                                `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                            ))
+                            // const htmRenderlLyric = _this.showLyric.slice(_this.indexLyric, _this.indexLyric + 2).map(key => (
+                            //     `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${_this.fullLyric[key]}</p>`
+                            // ))
+                            // _this.indexLyric = 
+                            $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
+
+                            // change icon play
+                            $('.play_track-play-main').classList.add('playing');
+                            let lyric = _this.fullLyric;
+                            let showLyric = _this.showLyric;
+                            TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, lyric, showLyric });
 
                         }
-                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
-                        let dataTrack = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
-                        // show descr song
-                        $('.name__music').style.display = "block";
-                        $('.img__played').style.display = "block";
-
-                        // show icon
-                        orderNumber.style.display = "none";
-                        toolplay.style.display = "block";
-                        iconPlay.style.display = "none";
-                        iconPause.style.display = "block";
-
-                        // change icon play
-                        $('.play_track-play-main').classList.add('playing');
-                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
-
-
-
-                    } else {
+                    }
+                    else {
                         // click to pause
                         let dataTrack = _this.playlistMusicNewlyLunched[0].items.vPop[_this.currentIndex];
                         let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.vPop;
@@ -531,43 +799,95 @@ const HomePageMusic = {
                 let iconPlay = element.querySelector('.icon_play-tracks');
                 let iconPause = element.querySelector('.icon_pause-tracks');
                 let toolplay = element.querySelector('.play_track-play-main');
-                element.onclick = function (e) {
+                element.onclick = async function (e) {
 
                     // click different song
                     const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
-                    if (songIndex) {
-                        let orderNumber = element.querySelector('.order_number');
+                    if (songIndex || e.target.closest('.name_single')) {
+                        // GET infor artist
                         _this.currentIndex = Number(element.getAttribute('data-Index'));
-                        _this.isPlaying = true;
-                        element.classList.add('active_playing-track');
-                        if (_this.currentIndex !== _this.oldIndex) {
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                            _this.oldIndex = Number(element.getAttribute('data-Index'));
-                            // _this.clickSong = 0;
+                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
+                        await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                            .then(respone => respone.json())
+                            .then(data => {
+                                _this.inforArtist = data.data;
+                            })
+
+                        // render lyric
+                        await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                _this.sentences = data.data.sentences;
+                                _this.fullLyric = {};
+                            })
+                            .catch(error => console.error(error))
+                        if (songIndex && !e.target.closest('.name_single')) {
+                            let orderNumber = element.querySelector('.order_number');
+                            _this.currentIndex = Number(element.getAttribute('data-Index'));
+                            _this.isPlaying = true;
+                            element.classList.add('active_playing-track');
+                            if (_this.currentIndex !== _this.oldIndex) {
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                                $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.name_sing').style.color = "#fff";
+
+                                _this.oldIndex = Number(element.getAttribute('data-Index'));
+                                // _this.clickSong = 0;
+
+                            }
+                            _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
+                            let dataTrack = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
+                            // show descr song
+                            $('.name__music').style.display = "block";
+                            $('.img__played').style.display = "block";
+
+                            // show icon
+                            orderNumber.style.display = "none";
+                            toolplay.style.display = "block";
+                            iconPlay.style.display = "none";
+                            iconPause.style.display = "block";
+
+                            // change color name sing
+                            let nameTracks = element.querySelector('.name_sing');
+                            nameTracks.style.color = "#1ed760";
+
+                            // render lyric
+                            _this.sentences.map((sentence) => {
+                                const words = sentence.words;
+                                let key;
+                                let lyric = "";
+
+                                words.map((word, index) => {
+                                    if (index === 0) {
+                                        key = Math.floor(word.startTime / 1000);
+                                    }
+                                    lyric += `${word.data} `
+                                })
+
+                                _this.fullLyric[key] = lyric;
+                                _this.showLyric.push(key)
+                            })
+                            // render lyric control
+                            const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                                `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                            ))
+                            // const htmRenderlLyric = _this.showLyric.slice(_this.indexLyric, _this.indexLyric + 2).map(key => (
+                            //     `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${_this.fullLyric[key]}</p>`
+                            // ))
+                            // _this.indexLyric = 
+                            $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
+
+                            // change icon play
+                            $('.play_track-play-main').classList.add('playing');
+                            let lyric = _this.fullLyric;
+                            let showLyric = _this.showLyric;
+                            TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, lyric, showLyric });
 
                         }
-                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
-                        let dataTrack = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
-                        // show descr song
-                        $('.name__music').style.display = "block";
-                        $('.img__played').style.display = "block";
-
-                        // show icon
-                        orderNumber.style.display = "none";
-                        toolplay.style.display = "block";
-                        iconPlay.style.display = "none";
-                        iconPause.style.display = "block";
-
-                        // change icon play
-                        $('.play_track-play-main').classList.add('playing');
-                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
-
-
-
-                    } else {
+                    }
+                    else {
                         // click to pause
                         let dataTrack = _this.playlistMusicNewlyLunched[0].items.others[_this.currentIndex];
                         let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.others;
@@ -591,43 +911,95 @@ const HomePageMusic = {
             let iconPlay = element.querySelector('.icon_play-tracks');
             let iconPause = element.querySelector('.icon_pause-tracks');
             let toolplay = element.querySelector('.play_track-play-main');
-            element.onclick = function (e) {
+            element.onclick = async function (e) {
 
                 // click different song
                 const songIndex = e.target.closest('.content_music-new:not(.active_playing-track)');
-                if (songIndex) {
-                    let orderNumber = element.querySelector('.order_number');
+                if (songIndex || e.target.closest('.name_single')) {
+                    // GET infor artist
                     _this.currentIndex = Number(element.getAttribute('data-Index'));
-                    _this.isPlaying = true;
-                    element.classList.add('active_playing-track');
-                    if (_this.currentIndex !== _this.oldIndex) {
-                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
-                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
-                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
-                        $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
-                        _this.oldIndex = Number(element.getAttribute('data-Index'));
-                        // _this.clickSong = 0;
+                    _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                    await fetch(END_POINT + `/api/artist?name=${_this.dataTrackPlaying.artists[0].alias}`)
+                        .then(respone => respone.json())
+                        .then(data => {
+                            _this.inforArtist = data.data;
+                        })
+
+                    // render lyric
+                    await fetch(END_POINT + `/api/lyric?id=${_this.dataTrackPlaying.encodeId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            _this.sentences = data.data.sentences;
+                            _this.fullLyric = {};
+                        })
+                        .catch(error => console.error(error))
+                    if (songIndex && !e.target.closest('.name_single')) {
+                        let orderNumber = element.querySelector('.order_number');
+                        _this.currentIndex = Number(element.getAttribute('data-Index'));
+                        _this.isPlaying = true;
+                        element.classList.add('active_playing-track');
+                        if (_this.currentIndex !== _this.oldIndex) {
+                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).classList.remove('active_playing-track');
+                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_pause-tracks').style.display = "none";
+                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.icon_play-tracks').style.display = "none";
+                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.order_number').style.display = "block";
+                            $(`.content_music-new[data-Index="${_this.oldIndex}"]`).querySelector('.name_sing').style.color = "#fff";
+
+                            _this.oldIndex = Number(element.getAttribute('data-Index'));
+                            // _this.clickSong = 0;
+
+                        }
+                        _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                        let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
+                        // show descr song
+                        $('.name__music').style.display = "block";
+                        $('.img__played').style.display = "block";
+
+                        // show icon
+                        orderNumber.style.display = "none";
+                        toolplay.style.display = "block";
+                        iconPlay.style.display = "none";
+                        iconPause.style.display = "block";
+
+                        // change color name sing
+                        let nameTracks = element.querySelector('.name_sing');
+                        nameTracks.style.color = "#1ed760";
+
+                        // render lyric
+                        _this.sentences.map((sentence) => {
+                            const words = sentence.words;
+                            let key;
+                            let lyric = "";
+
+                            words.map((word, index) => {
+                                if (index === 0) {
+                                    key = Math.floor(word.startTime / 1000);
+                                }
+                                lyric += `${word.data} `
+                            })
+
+                            _this.fullLyric[key] = lyric;
+                            _this.showLyric.push(key)
+                        })
+                        // render lyric control
+                        const htmRenderlLyric = Object.entries(_this.fullLyric).map(([key, item]) => (
+                            `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${item}</p>`
+                        ))
+                        // const htmRenderlLyric = _this.showLyric.slice(_this.indexLyric, _this.indexLyric + 2).map(key => (
+                        //     `<p class="lyric_control_${key} content__lyric_control" data-time = ${key}>${_this.fullLyric[key]}</p>`
+                        // ))
+                        // _this.indexLyric = 
+                        $('.render__lyric_control').innerHTML = htmRenderlLyric.join('');
+
+                        // change icon play
+                        $('.play_track-play-main').classList.add('playing');
+                        let lyric = _this.fullLyric;
+                        let showLyric = _this.showLyric;
+                        TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, lyric, showLyric });
 
                     }
-                    _this.dataTrackPlaying = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
-                    let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
-                    // show descr song
-                    $('.name__music').style.display = "block";
-                    $('.img__played').style.display = "block";
-
-                    // show icon
-                    orderNumber.style.display = "none";
-                    toolplay.style.display = "block";
-                    iconPlay.style.display = "none";
-                    iconPause.style.display = "block";
-
-                    // change icon play
-                    $('.play_track-play-main').classList.add('playing');
-                    TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack });
-
-
-
-                } else {
+                }
+                else {
                     // click to pause
                     let dataTrack = _this.playlistMusicNewlyLunched[0].items.all[_this.currentIndex];
                     let dataAllTrack = _this.playlistMusicNewlyLunched[0].items.all;
@@ -641,7 +1013,9 @@ const HomePageMusic = {
                         TrackPlaylist.loadCurrentSong({ type: "newly-play", dataTrack, status: "pause" });
                     }
                 }
+
             }
+
         })
         // hover tracks when play
         $$('.content_music-new').forEach((element, index) => {
@@ -684,7 +1058,7 @@ const HomePageMusic = {
         })
         // end render playlist newly lunched
 
-        // start render banner Music Mood
+        // start render banner Music Tab1
         const list__musicTab1 = _this.playlistMusicTab1.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistTab1 = item.encodeId;
             _this.bannerTab1 = item.thumbnailM;
@@ -702,7 +1076,7 @@ const HomePageMusic = {
         musicTab1.innerHTML = list__musicTab1.join("");
         $('.head__title-tab1').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTab1.title}</h2>`;
 
-        // start render banner Music Chill
+        // start render banner Music Tab2
         const list__musicTab2 = _this.playlistMusicTab2.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistTab2 = item.encodeId;
             _this.bannerTab2 = item.thumbnailM;
@@ -719,7 +1093,7 @@ const HomePageMusic = {
         musicTab2.innerHTML = list__musicTab2.join("");
         $('.head__title-tab2').innerHTML = `<h2 class="title-tab">${_this.playlistMusicTab2.title}</h2>`;
 
-        //  start render banner Music Spring
+        //  start render banner Music Tab3
         const list__musicTab3 = _this.playlistMusicTab3.items.slice(0, 6).map((item, index) => {
             _this.idPlaylistTab3 = item.encodeId;
             _this.bannerTab3 = item.thumbnailM;
@@ -780,7 +1154,7 @@ const HomePageMusic = {
             $('.content_search').style.display = "none";
             mainInforTracks.style.display = "none";
             // close tab infor single
-            $('.conatiner__infor_tracks-playing').style.display = "none";
+            $('.container__infor_tracks-playing').style.display = "none";
             allMainContent.style.width = "85%";
             allMainContent.style.margin = "auto";
         }
@@ -793,7 +1167,7 @@ const HomePageMusic = {
             $('.content_search-mobile').style.display = "none";
             mainInforTracks.style.display = "none";
             // close tab infor single
-            $('.conatiner__infor_tracks-playing').style.display = "none";
+            $('.container__infor_tracks-playing').style.display = "none";
             allMainContent.style.width = "85%";
             allMainContent.style.margin = "auto";
         }
@@ -940,6 +1314,10 @@ const HomePageMusic = {
                         mainContent.style.display = "block";
                         $('.content_search').style.display = "none";
                         mainInforTracks.style.display = "none";
+                        // close tab infor single
+                        $('.container__infor_tracks-playing').style.display = "none";
+                        allMainContent.style.width = "85%";
+                        allMainContent.style.margin = "auto";
 
                     }
                 }
@@ -966,8 +1344,6 @@ const HomePageMusic = {
                 $('.content').style.display = "none";
                 $('.list_Tracks-single').style.display = "none";
                 $('.list_Tracks-single').style.display = "none";
-                // $('.playlist__header').style.display = "flex";
-                // $('.list_Tracks-single').style.display = "block";
 
                 // mobile
                 $('.icon_action-mobile').style.display = "none";

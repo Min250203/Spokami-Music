@@ -338,7 +338,7 @@ html {
     padding: 0 10px;
 }
 
-.conatiner__infor_tracks-playing {
+.container__infor_tracks-playing {
     display: none;
     padding-right: 10px;
     height: 100%;
@@ -1864,6 +1864,8 @@ html {
 .content_bxh-new {
     display: none;
     margin-bottom: 50px;
+    background-color: #121212;
+    padding: 0 26px;
 }
 
 .result-artist {
@@ -1901,7 +1903,7 @@ html {
 }
 
 .content__lyric {
-    display: flex;
+    display: none;
     width: 100%;
 
 }
@@ -1969,4 +1971,12 @@ html {
     overflow: hidden;
     text-align: center;
     line-height: 20px;
+}
+
+.banner__bxh{
+    width: 100%;
+}
+
+.img__banner_{
+    width: 100%;
 }

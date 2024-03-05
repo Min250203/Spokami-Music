@@ -286,6 +286,7 @@
                     <!-- end all tracks playlist -->
                     <!-- bxh new -->
                     <div class="content_bxh-new">
+                        <div class="banner__bxh"></div>
                         <div class="head_title-bxh">
                             <h1 class="title_bxh">BXH MỚI NHẤT</h1>
                             <i class="fa-solid fa-play icon_play-bxh"></i>
@@ -296,7 +297,7 @@
                 </div>
 
                 <!-- infor tracks when playing -->
-                <div class="conatiner__infor_tracks-playing">
+                <div class="container__infor_tracks-playing">
                     <div class="content__infor_tracks-playing">
                         <div class="infor__tracks_single-playing">
                             <div class="headtitle__tracks-playing">
@@ -423,17 +424,7 @@
     const $ = document.querySelector.bind(document);
     const $$ = document.querySelectorAll.bind(document);
     const container = $('#container');
-    // translateLogin
-    document.querySelector('.btn-login').onclick = function () {
-        container.style.display = "none";
-        $('#Login').style.display = "flex";
-    }
-
-    // translateReturn
-    document.querySelector('.btn__exist').onclick = function () {
-        container.style.display = "block";
-        $('#Login').style.display = "none";
-    }
+    
 </script>
 <script src="homePageMusic.js" type="module"></script>
 <!-- <script src="searchMusic.js" type="module"></script> -->
